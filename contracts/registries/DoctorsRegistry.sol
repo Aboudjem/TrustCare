@@ -67,7 +67,19 @@ contract DoctorsRegistry is AdminRole {
         return doctors[userAddress].categories;
     }
 
+    function isAuthorized (address doctor, uint category) public view returns (bool) {
+        uint[] memory categories = doctors[doctor].categories;
+        uint length = categories.length;
+        for (uint i = 0; i < length; i++) {
+            if (categories[i] == category) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function addConsultation(uint category, address patient, string calldata prescription) external onlyDoctor {
+        require(isAuthorized(msg.sender,category), "doctor is not allowed for this category");
         uint date = now;
         address sender = msg.sender;
         bytes32 consultationID = keccak256(abi.encode(category, date, sender, patient, prescription));
