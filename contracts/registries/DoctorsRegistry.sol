@@ -1,16 +1,14 @@
 pragma solidity 0.6.2;
 
 import "../app/TrustCare.sol";
-import "../roles/Ownable.sol";
+import "../roles/AdminRole.sol";
 
-contract DoctorsRegistry is Ownable {
+contract DoctorsRegistry is AdminRole {
 
     event DoctorRegistered (uint license, address doctorAddress, uint[] categories);
     event DoctorDeleted (uint license, address doctorAddress);
     event DoctorUpdated (address doctorAddress, uint[] categories);
     event ConsultationCreated (uint category, uint date, address doctor, address patient, string prescription);
-    event AdminCreated(address admin);
-    event AdminRemoved(address admin);
 
     TrustCare trustCare;
 
@@ -29,15 +27,9 @@ contract DoctorsRegistry is Ownable {
 
     mapping (address => Doctor) doctors;
     mapping (bytes32 => Consultation) consultations;
-    mapping (address => bool) admins;
 
     modifier onlyDoctor() {
         require(isDoctor(msg.sender), "error : this address is not registered as doctor");
-        _;
-    }
-
-    modifier onlyAdmin() {
-        require(isAdmin(msg.sender), "error : this address is not registered as admin");
         _;
     }
 
@@ -46,22 +38,6 @@ contract DoctorsRegistry is Ownable {
             return true;
         }
         return false;
-    }
-
-    function isAdmin(address userAddress) public view returns (bool) {
-        return admins[userAddress];
-    }
-
-    function addAdmin(address admin) external onlyOwner {
-        require(!admins[admin], "admin already exists");
-        admins[admin] = true;
-        emit AdminCreated(admin);
-    }
-
-    function removeAdmin(address admin) external onlyOwner {
-        require(admins[admin], "admin doesn't exist");
-        admins[admin] = false;
-        emit AdminRemoved(admin);
     }
 
     function registerNewDoctor(address userAddress, uint license, uint[] calldata categories) external onlyAdmin {

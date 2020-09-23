@@ -1,6 +1,8 @@
 pragma solidity 0.6.2;
 
-contract HealthInsurancesRegistry {
+import "../roles/AdminRole.sol";
+
+contract HealthInsurancesRegistry is AdminRole {
     
     event healthInsuranceRegistered (uint uuid, address patientAddress, uint countryCode);
     event healthInsuranceDeleted (uint uuid, address patientAddress);

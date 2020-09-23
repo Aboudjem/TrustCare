@@ -1,15 +1,17 @@
 pragma solidity 0.6.2;
 
 import "../app/TrustCare.sol";
-import "../roles/Ownable.sol";
+import "../roles/AdminRole.sol";
 import "./DoctorsRegistry.sol";
 
-contract PatientsRegistry is Ownable {
+contract PatientsRegistry is AdminRole {
 
     event PatientRegistered (string CNSNumber, address patientAddress, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage, address healthInsurance);
     event PatientDeleted (string uuid, address patientAddress);
     event PatientUpdated (address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage, address healthInsurance);
     event TransactionApproved (bytes32 transactionID, address patient);
+    event TrustCareBound(address trustCare);
+    event DoctorsRegistryBound(address doctorsRegistry);
 
     TrustCare trustCare;
     DoctorsRegistry doctorsRegistry;
@@ -26,6 +28,16 @@ contract PatientsRegistry is Ownable {
 
     mapping (address => Patient) patients;
 
+    function bindToTrustCare (address trustCareAddress) public onlyOwner {
+        trustCare = TrustCare(trustCareAddress);
+        emit TrustCareBound (trustCareAddress);
+    }
+
+    function bindToDoctorsRegistry (address doctorsRegistryAddress) public onlyOwner {
+        doctorsRegistry = DoctorsRegistry(doctorsRegistryAddress);
+        emit DoctorsRegistryBound(doctorsRegistryAddress);
+    }
+
     function registerNewPatient(
         address userAddress,
         string memory CNSNumber,
@@ -34,7 +46,7 @@ contract PatientsRegistry is Ownable {
         uint countryOfResidenceCode,
         uint countryOfWorkCode,
         uint invalidityPercentage,
-        address healthInsurance) public {
+        address healthInsurance) public onlyAdmin {
         Patient memory newPatient;
         newPatient.CNSNumber = CNSNumber;
         newPatient.isMale = isMale;
@@ -47,13 +59,13 @@ contract PatientsRegistry is Ownable {
         emit PatientRegistered(CNSNumber, userAddress, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, healthInsurance);
     }
 
-    function deletePatient(address userAddress) public {
+    function deletePatient(address userAddress) public onlyAdmin {
         string memory CNSNumber = patients[userAddress].CNSNumber;
         delete patients[userAddress];
         emit PatientDeleted(CNSNumber, userAddress);
     }
 
-    function updatePatient(address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage, address healthInsurance) public {
+    function updatePatient(address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage, address healthInsurance) public onlyAdmin {
         patients[userAddress].ageCategory = ageCategory;
         patients[userAddress].countryOfResidenceCode = countryOfResidenceCode;
         patients[userAddress].countryOfWorkCode = countryOfWorkCode;
