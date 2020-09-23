@@ -11,10 +11,8 @@ contract PatientsRegistry is AdminRole {
     event PatientUpdated (address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage, address healthInsurance);
     event TransactionApproved (bytes32 transactionID, address patient);
     event TrustCareBound(address trustCare);
-    event DoctorsRegistryBound(address doctorsRegistry);
 
     TrustCare trustCare;
-    DoctorsRegistry doctorsRegistry;
 
     struct Patient {
         string CNSNumber;
@@ -31,11 +29,6 @@ contract PatientsRegistry is AdminRole {
     function bindToTrustCare (address trustCareAddress) public onlyOwner {
         trustCare = TrustCare(trustCareAddress);
         emit TrustCareBound (trustCareAddress);
-    }
-
-    function bindToDoctorsRegistry (address doctorsRegistryAddress) public onlyOwner {
-        doctorsRegistry = DoctorsRegistry(doctorsRegistryAddress);
-        emit DoctorsRegistryBound(doctorsRegistryAddress);
     }
 
     function registerNewPatient(
@@ -103,6 +96,7 @@ contract PatientsRegistry is AdminRole {
     }
 
     function approveTransaction(bytes32 transactionID) external {
+        DoctorsRegistry doctorsRegistry = DoctorsRegistry(trustCare.showDoctorsRegistry());
         require (msg.sender == doctorsRegistry.consultationPatient(transactionID), "permission denied : caller is not beneficiary of the transaction");
         if (trustCare.getTransactionStatus(transactionID) == 1) {
             trustCare.updateTransactionStatus(transactionID, 2);
