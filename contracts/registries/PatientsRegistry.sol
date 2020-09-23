@@ -5,9 +5,9 @@ import "../roles/Ownable.sol";
 
 contract PatientsRegistry is Ownable {
 
-    event PatientRegistered (string CNSNumber, address patientAddress, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage);
+    event PatientRegistered (string CNSNumber, address patientAddress, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage, address healthInsurance);
     event PatientDeleted (string uuid, address patientAddress);
-    event PatientUpdated (address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage);
+    event PatientUpdated (address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage, address healthInsurance);
     event TransactionApproved (bytes32 transactionID, address patient);
 
     TrustCare trustCare;
@@ -19,11 +19,20 @@ contract PatientsRegistry is Ownable {
         uint countryOfResidenceCode;
         uint countryOfWorkCode;
         uint invalidityPercentage;
+        address healthInsurance;
     }
 
     mapping (address => Patient) patients;
 
-    function registerNewPatient(address userAddress, string memory CNSNumber, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage) public {
+    function registerNewPatient(
+        address userAddress,
+        string memory CNSNumber,
+        bool isMale,
+        uint ageCategory,
+        uint countryOfResidenceCode,
+        uint countryOfWorkCode,
+        uint invalidityPercentage,
+        address healthInsurance) public {
         Patient memory newPatient;
         newPatient.CNSNumber = CNSNumber;
         newPatient.isMale = isMale;
@@ -31,8 +40,9 @@ contract PatientsRegistry is Ownable {
         newPatient.countryOfResidenceCode = countryOfResidenceCode;
         newPatient.countryOfWorkCode = countryOfWorkCode;
         newPatient.invalidityPercentage = invalidityPercentage;
+        newPatient.healthInsurance = healthInsurance;
         patients[userAddress] = newPatient;
-        emit PatientRegistered(CNSNumber, userAddress, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage);
+        emit PatientRegistered(CNSNumber, userAddress, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, healthInsurance);
     }
 
     function deletePatient(address userAddress) public {
@@ -41,12 +51,13 @@ contract PatientsRegistry is Ownable {
         emit PatientDeleted(CNSNumber, userAddress);
     }
 
-    function updatePatient(address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage) public {
+    function updatePatient(address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage, address healthInsurance) public {
         patients[userAddress].ageCategory = ageCategory;
         patients[userAddress].countryOfResidenceCode = countryOfResidenceCode;
         patients[userAddress].countryOfWorkCode = countryOfWorkCode;
         patients[userAddress].invalidityPercentage = invalidityPercentage;
-        emit PatientUpdated(userAddress, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage);
+        patients[userAddress].healthInsurance = healthInsurance;
+        emit PatientUpdated(userAddress, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, healthInsurance);
     }
 
     function showPatientCNSNumber(address userAddress) public view returns (string memory) {
@@ -71,6 +82,10 @@ contract PatientsRegistry is Ownable {
 
     function showInvalidityPercentage (address userAddress) public view returns (uint) {
         return patients[userAddress].invalidityPercentage;
+    }
+
+    function showHealthInsurance (address userAddress) public view returns (address) {
+        return patients[userAddress].healthInsurance;
     }
 
     function approveTransaction(uint category, uint date, address doctor, string calldata prescription) external {

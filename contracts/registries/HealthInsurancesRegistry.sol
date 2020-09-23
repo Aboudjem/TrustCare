@@ -10,13 +10,13 @@ contract HealthInsurancesRegistry {
         uint uuid;
         uint countryCode;
     }
-    mapping (address => healthInsurance) heathInsurances;
+    mapping (address => healthInsurance) healthInsurances;
 
     function registerNewHealthInsurance(address userAddress, uint uuid, uint countryCode) public {
-        healthInsurance newHealthInsurance;
+        healthInsurance memory newHealthInsurance;
         newHealthInsurance.uuid = uuid;
         newHealthInsurance.countryCode = countryCode;
-        heathInsurances[userAddress] = newHealthInsurance;
+        healthInsurances[userAddress] = newHealthInsurance;
         emit healthInsuranceRegistered(uuid, userAddress, countryCode);
     }
 
