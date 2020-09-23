@@ -1,6 +1,7 @@
 pragma solidity 0.6.2;
 
-import "../app/HealthChain.sol";
+import "../app/TrustCare.sol";
+import "../app/TrustCare.sol";
 
 contract DoctorsRegistry {
 
@@ -9,7 +10,7 @@ contract DoctorsRegistry {
     event DoctorUpdated (address doctorAddress, uint[] categories);
     event ConsultationCreated (uint category, uint date, address doctor, address patient, string prescription);
 
-    HealthChain healthChain;
+    TrustCare trustCare;
 
     struct Consultation {
         uint category;
@@ -59,8 +60,7 @@ contract DoctorsRegistry {
         newConsultation.doctor = doctor;
         newConsultation.patient = patient;
         newConsultation.prescription = prescription;
-        uint transactionStatus = 1;
-        healthChain.newTransaction(consultationID, transactionStatus);
+        trustCare.newTransaction(consultationID);
         consultations[consultationID] = newConsultation;
         emit ConsultationCreated (category, date, doctor, patient, prescription);
     }
