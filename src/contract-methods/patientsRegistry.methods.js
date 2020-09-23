@@ -1,6 +1,6 @@
 const ethers = require("ethers");
 
-const DoctorsRegistry = require("../../build/contracts/DoctorsRegistry.json");
+const DoctorsRegistry = require("../../build/contracts/PatientsRegistry.json");
 
 async function deployDoctorsRegistry(signer) {
   const factory = new ethers.ContractFactory(
@@ -15,6 +15,7 @@ async function deployDoctorsRegistry(signer) {
 async function registerNewDoctor(userAddress, license, categories, contract) {
   return contract.registerNewDoctor(userAddress, license, categories);
 }
+
 async function deleteDoctor(userAddress, contract) {
   return contract.deleteDoctor(userAddress);
 }

@@ -5,16 +5,23 @@ import {
     registerNewDoctor,
     updateDoctor
 } from "./contract-methods/doctorsRegistry.methods";
+import {
+    deployTrustCare,
+    isDoctor,
+    isValidator,
+    newTransaction,
+    updateTransactionStatus
+} from "./contract-methods/trustCare.methods";
 
 const { BigNumber } = require("ethers/utils");
 
 const { connectAt, requireSigner } = require("../utils/utils");
-// const methods = require("../contract-methods/TrustCare.methods");
-// const Compliance = require("../../build/contracts/TrustCare.json");
+
 
 class TrustCare {
 
     static doctorsRegistryInstance;
+    static trustCareInstance;
 
   constructor(caller) {
     this.caller = caller;
@@ -22,24 +29,50 @@ class TrustCare {
 
   static async deployFullTrustCare(signer) {
     await requireSigner(signer);
-    const DoctorsRegistry = await deployDoctorsRegistry(signer)
+    const DoctorsRegistry = await deployDoctorsRegistry(signer);
     return new TrustCare(DoctorsRegistry, signer);
   }
 
-    static async deployDoctorsRegistry(signer) {
-        await requireSigner(signer);
-        this.doctorsRegistryInstance = await deployDoctorsRegistry(signer)
+    static async at(contractAddress, caller) {
+        const trustCareInstance = await connectAt(
+            contractAddress,
+            TrustCare.abi,
+            caller
+        );
+        return new TrustCare(trustCareInstance, caller);
     }
 
-  static async at(contractAddress, caller) {
-    const trustCareInstance = await connectAt(
-      contractAddress,
-      TrustCare.abi,
-      caller
-    );
-    return new TrustCare(trustCareInstance, caller);
-  }
+    static async deployDoctorsRegistry(signer) {
+        await requireSigner(signer);
+        this.doctorsRegistryInstance = await deployDoctorsRegistry(signer);
+    }
 
+
+    static async deployTrustCare(signer) {
+        await requireSigner(signer);
+        this.trustCareInstance = await deployTrustCare(signer);
+    }
+
+
+    async isDoctor(userAddress) {
+        await requireSigner(this.caller);
+        return isDoctor(userAddress, this.trustCareInstance);
+    }
+
+    async isValidator(userAddress) {
+        await requireSigner(this.caller);
+        return isValidator(userAddress, this.trustCareInstance);
+    }
+
+    async newTransaction(transactionID) {
+        await requireSigner(this.caller);
+        return newTransaction(transactionID, this.trustCareInstance);
+    }
+
+    async updateTransactionStatus(transactionID, status) {
+        await requireSigner(this.caller);
+        return updateTransactionStatus(transactionID, status, this.trustCareInstance);
+    }
 
   async registerNewDoctor(userAddress, license, categories) {
     await requireSigner(this.caller);

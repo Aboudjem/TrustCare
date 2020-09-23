@@ -1,6 +1,6 @@
 const ethers = require("ethers");
 
-const DoctorsRegistry = require("../../build/contracts/DoctorsRegistry.json");
+const DoctorsRegistry = require("../../build/contracts/HealthInsurancesRegistry.json");
 
 async function deployDoctorsRegistry(signer) {
   const factory = new ethers.ContractFactory(
