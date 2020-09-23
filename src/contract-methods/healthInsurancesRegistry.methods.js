@@ -1,46 +1,43 @@
 const ethers = require("ethers");
 
-const DoctorsRegistry = require("../../build/contracts/HealthInsurancesRegistry.json");
+const HealthInsurancesRegistry = require("../../build/contracts/HealthInsurancesRegistry.json");
 
-async function deployDoctorsRegistry(signer) {
+async function deployHealthInsurancesRegistry(signer) {
   const factory = new ethers.ContractFactory(
-    DoctorsRegistry.abi,
-    DoctorsRegistry.bytecode,
+    HealthInsurancesRegistry.abi,
+    HealthInsurancesRegistry.bytecode,
     signer
   );
   const deploy = await factory.deploy();
   return deploy.deployed();
 }
 
-async function registerNewDoctor(userAddress, license, categories, contract) {
-  return contract.registerNewDoctor(userAddress, license, categories);
-}
-async function deleteDoctor(userAddress, contract) {
-  return contract.deleteDoctor(userAddress);
+async function registerNewHealthInsurance(userAddress, uuid, countryCode, contract) {
+  return contract.registerNewHealthInsurance(userAddress, uuid, countryCode);
 }
 
-async function updateDoctor(userAddress, categories, contract) {
-  return contract.updateDoctor(userAddress, categories);
+async function deleteHealthInsurance(userAddress, contract) {
+  return contract.deleteHealthInsurance(userAddress);
 }
 
-async function doctor(userAddress, contract) {
-  return contract.doctor(userAddress, contract);
+async function updateHealthInsurance(userAddress, uuid, countryCode, contract) {
+  return contract.updateHealthInsurance(userAddress, uuid, countryCode);
 }
 
-async function addConsultation(category, patient, prescription, contract) {
-  return contract.addConsultation(category, patient, prescription);
+async function showHealthInsuranceUUID(userAddress, contract) {
+  return contract.showHealthInsuranceUUID(userAddress, contract);
 }
 
-async function consultation(consultationID, contract) {
-  return contract.consultation(consultationID);
+async function showHealthInsuranceCountryCode(userAddress, contract) {
+  return contract.showHealthInsuranceCountryCode(userAddress);
 }
+
 
 module.exports = {
-  deployDoctorsRegistry,
-  registerNewDoctor,
-  deleteDoctor,
-  updateDoctor,
-  doctor,
-  addConsultation,
-  consultation,
+  deployHealthInsurancesRegistry,
+  registerNewHealthInsurance,
+  deleteHealthInsurance,
+  updateHealthInsurance,
+  showHealthInsuranceUUID,
+  showHealthInsuranceCountryCode,
 };
