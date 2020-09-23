@@ -2,6 +2,7 @@ pragma solidity 0.6.2;
 
 import "../app/TrustCare.sol";
 import "../roles/Ownable.sol";
+import "./DoctorsRegistry.sol";
 
 contract PatientsRegistry is Ownable {
 
@@ -11,6 +12,7 @@ contract PatientsRegistry is Ownable {
     event TransactionApproved (bytes32 transactionID, address patient);
 
     TrustCare trustCare;
+    DoctorsRegistry doctorsRegistry;
 
     struct Patient {
         string CNSNumber;
@@ -88,12 +90,11 @@ contract PatientsRegistry is Ownable {
         return patients[userAddress].healthInsurance;
     }
 
-    function approveTransaction(uint category, uint date, address doctor, string calldata prescription) external {
-        address sender = msg.sender;
-        bytes32 transactionID = keccak256(abi.encode(category, date, doctor, sender, prescription));
+    function approveTransaction(bytes32 transactionID) external {
+        require (msg.sender == doctorsRegistry.consultationPatient(transactionID), "permission denied : caller is not beneficiary of the transaction");
         if (trustCare.getTransactionStatus(transactionID) == 1) {
             trustCare.updateTransactionStatus(transactionID, 2);
-            emit TransactionApproved (transactionID, sender);
+            emit TransactionApproved (transactionID, msg.sender);
         }
         if (trustCare.getTransactionStatus(transactionID) != 1) {
             revert("transaction not valid");
