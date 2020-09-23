@@ -32,19 +32,19 @@ async function doctorCategories(userAddress, contract) {
 }
 
 async function isDoctor(userAddress, contract) {
-  return contract.isDoctor(userAddress, contract);
+  return contract.isDoctor(userAddress);
 }
 
 async function isAdmin(userAddress, contract) {
-  return contract.isAdmin(userAddress, contract);
+  return contract.isAdmin(userAddress);
 }
 
 async function addAdmin(userAddress, contract) {
-  return contract.addAdmin(userAddress, contract);
+  return contract.addAdmin(userAddress);
 }
 
 async function removeAdmin(userAddress, contract) {
-  return contract.removeAdmin(userAddress, contract);
+  return contract.removeAdmin(userAddress);
 }
 
 async function addConsultation(category, patient, prescription, contract) {

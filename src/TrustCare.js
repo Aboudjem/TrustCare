@@ -1,4 +1,6 @@
-import {
+const {isDoctor} = require("./contract-methods/doctorsRegistry.methods");
+const {connectAt, requireSigner} = require("./utils/utils");
+const {
     addAdmin,
     addConsultation,
     consultationCategory,
@@ -14,29 +16,23 @@ import {
     registerNewDoctor,
     removeAdmin,
     updateDoctor
-} from "./contract-methods/doctorsRegistry.methods";
-import {
+} = require("./contract-methods/doctorsRegistry.methods");
+const {
     deployTrustCare,
-    isDoctor,
     isValidator,
     newTransaction,
     updateTransactionStatus
-} from "./contract-methods/trustCare.methods";
-import {
+} = require("./contract-methods/trustCare.methods");
+const {
     approveTransaction, deletePatient,
     deployPatientsRegistry, registerNewPatient, showAgeCategory, showCountryOfResidenceCode, showCountryOfWorkCode,
     showInvalidityPercentage, showIsMale, showPatientCNSNumber, updatePatient
-} from "./contract-methods/patientsRegistry.methods";
-import {
+} = require("./contract-methods/patientsRegistry.methods");
+const {
     deleteHealthInsurance, deployHealthInsurancesRegistry,
     registerNewHealthInsurance, showHealthInsuranceCountryCode, showHealthInsuranceUUID,
     updateHealthInsurance
-} from "./contract-methods/healthInsurancesRegistry.methods";
-
-const { BigNumber } = require("ethers/utils");
-
-const { connectAt, requireSigner } = require("../utils/utils");
-
+} = require ("./contract-methods/healthInsurancesRegistry.methods");
 
 class TrustCare {
 
@@ -45,17 +41,26 @@ class TrustCare {
     trustCareInstance;
     healthInsuranceInstance;
 
-  constructor(caller) {
-    this.caller = caller;
+  constructor(doctorsRegistry, healthInsurancesRegistry, patientsRegistry, trustCare, caller) {
+      this.doctorsRegistryInstance = doctorsRegistry;
+      this.healthInsuranceInstance = healthInsurancesRegistry;
+      this.patientsRegistryInstance = patientsRegistry;
+      this.trustCareInstance = trustCare;
+      this.caller = caller;
   }
 
   static async deployFullTrustCare(signer) {
     await requireSigner(signer);
-    const DoctorsRegistry = await deployDoctorsRegistry(signer);
-    return new TrustCare(DoctorsRegistry, signer);
+      const doctorsRegistry = await deployDoctorsRegistry(signer);
+      const healthInsurancesRegistry = await deployHealthInsurancesRegistry(signer);
+      const patientsRegistry = await deployPatientsRegistry(signer);
+      const trustCare = await deployTrustCare(doctorsRegistry.address, healthInsurancesRegistry.address, patientsRegistry.address, signer);
+      return new TrustCare(doctorsRegistry, healthInsurancesRegistry, patientsRegistry, trustCare, signer);
   }
 
-    static async at(contractAddress, caller) {
+
+
+  static async at(contractAddress, caller) {
         const trustCareInstance = await connectAt(
             contractAddress,
             TrustCare.abi,
@@ -63,6 +68,8 @@ class TrustCare {
         );
         return new TrustCare(trustCareInstance, caller);
     }
+
+
 
     async deployDoctorsRegistry(signer) {
         await requireSigner(signer);
@@ -76,17 +83,12 @@ class TrustCare {
 
     async deployTrustCare(signer) {
         await requireSigner(signer);
-        this.trustCareInstance = await deployTrustCare(signer);
+        this.trustCareInstance = await deployTrustCare();
     }
 
     async deployHealthInsurancesRegistry(signer) {
         await requireSigner(signer);
         this.healthInsuranceInstance = await deployHealthInsurancesRegistry(signer);
-    }
-
-    async isDoctor(userAddress) {
-        await requireSigner(this.caller);
-        return isDoctor(userAddress, this.trustCareInstance);
     }
 
     async isValidator(userAddress) {
