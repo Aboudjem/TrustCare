@@ -108,7 +108,7 @@ contract PatientsRegistry is AdminRole {
             trustCare.updateTransactionStatus(transactionID, 2);
             emit TransactionApproved (transactionID, msg.sender);
         }
-        if (trustCare.getTransactionStatus(transactionID) != 1) {
+        else {
             revert("transaction not valid");
         }
     }

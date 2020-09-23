@@ -9,6 +9,7 @@ contract DoctorsRegistry is AdminRole {
     event DoctorDeleted (uint license, address doctorAddress);
     event DoctorUpdated (address doctorAddress, uint[] categories);
     event ConsultationCreated (uint category, uint date, address doctor, address patient, string prescription);
+    event TrustCareBound(address trustCare);
 
     TrustCare trustCare;
 
@@ -31,6 +32,11 @@ contract DoctorsRegistry is AdminRole {
     modifier onlyDoctor() {
         require(isDoctor(msg.sender), "error : this address is not registered as doctor");
         _;
+    }
+
+    function bindToTrustCare (address trustCareAddress) public onlyOwner {
+        trustCare = TrustCare(trustCareAddress);
+        emit TrustCareBound (trustCareAddress);
     }
 
     function isDoctor(address userAddress) public view returns (bool) {
