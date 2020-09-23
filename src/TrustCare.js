@@ -1,8 +1,9 @@
 import {
-    addConsultation, consultation,
+    addAdmin,
+    addConsultation, consultation, consultationCategory,
     deleteDoctor,
-    deployDoctorsRegistry, doctor,
-    registerNewDoctor,
+    deployDoctorsRegistry, doctor, doctorCategories, doctorLicense, isAdmin,
+    registerNewDoctor, removeAdmin,
     updateDoctor
 } from "./contract-methods/doctorsRegistry.methods";
 import {
@@ -74,11 +75,14 @@ class TrustCare {
         return updateTransactionStatus(transactionID, status, this.trustCareInstance);
     }
 
+
+
+    /// DOCTORS
+
   async registerNewDoctor(userAddress, license, categories) {
     await requireSigner(this.caller);
     return registerNewDoctor(userAddress, license, categories, this.doctorsRegistryInstance)
   }
-
 
     async deleteDoctor(userAddress) {
         await requireSigner(this.caller);
@@ -90,9 +94,34 @@ class TrustCare {
         return updateDoctor(userAddress, categories, this.doctorsRegistryInstance)
     }
 
-    async doctor(userAddress) {
+    async isDoctor(userAddress) {
         await requireSigner(this.caller);
-        return doctor(userAddress, this.doctorsRegistryInstance)
+        return isDoctor(userAddress, this.doctorsRegistryInstance)
+    }
+
+    async doctorLicense(userAddress) {
+        await requireSigner(this.caller);
+        return doctorLicense(userAddress, this.doctorsRegistryInstance)
+    }
+
+    async doctorCategories(userAddress) {
+        await requireSigner(this.caller);
+        return doctorCategories(userAddress, this.doctorsRegistryInstance)
+    }
+
+    async isAdmin(userAddress) {
+        await requireSigner(this.caller);
+        return isAdmin(userAddress, this.doctorsRegistryInstance)
+    }
+
+    async addAdmin(userAddress) {
+        await requireSigner(this.caller);
+        return addAdmin(userAddress, this.doctorsRegistryInstance)
+    }
+
+    async removeAdmin(userAddress) {
+        await requireSigner(this.caller);
+        return removeAdmin(userAddress, this.doctorsRegistryInstance)
     }
 
     async addConsultation(category, patient, prescription) {
@@ -100,9 +129,29 @@ class TrustCare {
         return addConsultation(category, patient, prescription, this.doctorsRegistryInstance)
     }
 
-    async consultation(category, patient, prescription) {
+    async consultationCategory(category, patient, prescription) {
         await requireSigner(this.caller);
-        return consultation(category, patient, prescription, this.doctorsRegistryInstance)
+        return consultationCategory(category, patient, prescription, this.doctorsRegistryInstance)
+    }
+
+    async consultationDate(category, patient, prescription) {
+        await requireSigner(this.caller);
+        return consultationDate(category, patient, prescription, this.doctorsRegistryInstance)
+    }
+
+    async consultationDoctor(category, patient, prescription) {
+        await requireSigner(this.caller);
+        return consultationDoctor(category, patient, prescription, this.doctorsRegistryInstance)
+    }
+
+    async consultationPatient(category, patient, prescription) {
+        await requireSigner(this.caller);
+        return consultationPatient(category, patient, prescription, this.doctorsRegistryInstance)
+    }
+
+    async consultationPrescription(category, patient, prescription) {
+        await requireSigner(this.caller);
+        return consultationPrescription(category, patient, prescription, this.doctorsRegistryInstance)
     }
 
 }
