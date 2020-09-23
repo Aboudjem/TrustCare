@@ -4,6 +4,10 @@ The Infrachain Challenge was a hackathon focused on Blockchain in public sector 
 
 ![img](https://imgur.com/OU30RVB.png)
 
+<p align="center">
+  <img width="460" height="300" src="https://imgur.com/OU30RVB.png">
+</p>
+
 ## Presentation 
 
 We decided to developped a new system based on blockchain for the health insurance company to fight fraud and to have smouth and faster transactions between all the counterparties.
