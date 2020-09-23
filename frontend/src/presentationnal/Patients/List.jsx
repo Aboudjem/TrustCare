@@ -2,14 +2,15 @@ import React from 'react';
 import {IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
 import {Add, Refresh} from "@material-ui/icons";
 import {Link} from "react-router-dom";
+import Loading from "../Loading";
 
 
 export default function ({loading, error, patients, refresh,}) {
 
     const Header = () => {
         return (<div>
-            <IconButton>
-                <Refresh onClick={refresh}/>
+            <IconButton onClick={refresh}>
+                <Refresh/>
             </IconButton>
             <IconButton component={Link} to="/patients/add">
                 <Add/>
@@ -20,7 +21,7 @@ export default function ({loading, error, patients, refresh,}) {
     if (loading)
         return <>
             <Header/>
-            loading
+            <Loading/>
         </>;
 
     if (error)
@@ -42,7 +43,7 @@ export default function ({loading, error, patients, refresh,}) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {patients.map(patient => (<TableRow index={patient._id}>
+                    {patients.map(patient => (<TableRow key={patient._id}>
                         <TableCell>{patient.cns_number}</TableCell>
                         <TableCell>{patient.first_name} {patient.last_name}</TableCell>
                         <TableCell>{patient.birth_date.slice(0, -14)}</TableCell>
