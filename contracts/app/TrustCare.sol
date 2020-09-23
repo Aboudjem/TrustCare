@@ -6,7 +6,7 @@ contract TrustCare is Ownable{
 
     event TransactionCreated(bytes32 transactionID);
     event StatusUpdated(bytes32 transactionID, uint status);
-    event TrustCareCreated(address doctorsRegistry, address healthInsuranceRegistry, address patientsRegistry);
+    event TrustCareUpdated(address doctorsRegistry, address healthInsuranceRegistry, address patientsRegistry);
 
     mapping (bytes32 => uint) transactionStatus;
 
@@ -33,21 +33,22 @@ contract TrustCare is Ownable{
         registries.doctorsRegistry = doctorsRegistry;
         registries.healthInsuranceRegistry = healthInsuranceRegistry;
         registries.patientsRegistry = patientsRegistry;
-        emit TrustCareCreated(doctorsRegistry, healthInsuranceRegistry, patientsRegistry);
+        emit TrustCareUpdated(doctorsRegistry, healthInsuranceRegistry, patientsRegistry);
+    }
+
+    function updateTrustCare(address doctorsRegistry, address healthInsuranceRegistry, address patientsRegistry) public onlyOwner {
+        registries.doctorsRegistry = doctorsRegistry;
+        registries.healthInsuranceRegistry = healthInsuranceRegistry;
+        registries.patientsRegistry = patientsRegistry;
+        emit TrustCareUpdated(doctorsRegistry, healthInsuranceRegistry, patientsRegistry);
     }
 
     function isDoctorRegistry(address userAddress) public view returns (bool) {
-        if (userAddress != registries.doctorsRegistry) {
-            return false;
-        }
-        return true;
+        return (userAddress == registries.doctorsRegistry);
     }
 
     function isValidator(address userAddress) public view returns (bool) {
-        if (userAddress != registries.healthInsuranceRegistry && userAddress != registries.patientsRegistry) {
-            return false;
-        }
-        return true;
+        return (userAddress == registries.healthInsuranceRegistry || userAddress == registries.patientsRegistry);
     }
 
     function newTransaction (bytes32 transactionID) external onlyDoctorRegistry {
