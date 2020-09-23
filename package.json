@@ -68,5 +68,8 @@
     "*.js": [
       "eslint"
     ]
+  },
+  "dependencies": {
+    "ethers": "^5.0.14"
   }
 }

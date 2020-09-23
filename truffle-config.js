@@ -1,5 +1,5 @@
 const solcStable = {
-  version: '0.6.2',
+  version: "0.6.2",
   settings: {
     optimizer: {
       enabled: true,
@@ -11,13 +11,13 @@ const solcStable = {
 module.exports = {
   networks: {
     development: {
-      host: 'localhost',
+      host: "localhost",
       port: 8545,
-      network_id: '*', // eslint-disable-line camelcase
+      network_id: "*", // eslint-disable-line camelcase
     },
     coverage: {
-      host: 'localhost',
-      network_id: '*', // eslint-disable-line camelcase
+      host: "localhost",
+      network_id: "*", // eslint-disable-line camelcase
       port: 8555,
       gas: 0xfffffffffff,
       gasPrice: 0x01,
@@ -28,8 +28,8 @@ module.exports = {
     solc: solcStable,
   },
   mocha: {
-    reporter: 'eth-gas-reporter',
-    reporterOptions: { outputFile: './gas-report' }, // See options below
+    reporter: "eth-gas-reporter",
+    reporterOptions: { outputFile: "./gas-report" }, // See options below
   },
-  plugins: ['solidity-coverage'],
+  plugins: ["solidity-coverage"],
 };
