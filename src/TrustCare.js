@@ -1,9 +1,18 @@
 import {
     addAdmin,
-    addConsultation, consultation, consultationCategory,
+    addConsultation,
+    consultationCategory,
+    consultationDate,
+    consultationDoctor,
+    consultationPatient,
+    consultationPrescription,
     deleteDoctor,
-    deployDoctorsRegistry, doctor, doctorCategories, doctorLicense, isAdmin,
-    registerNewDoctor, removeAdmin,
+    deployDoctorsRegistry,
+    doctorCategories,
+    doctorLicense,
+    isAdmin,
+    registerNewDoctor,
+    removeAdmin,
     updateDoctor
 } from "./contract-methods/doctorsRegistry.methods";
 import {
@@ -13,6 +22,16 @@ import {
     newTransaction,
     updateTransactionStatus
 } from "./contract-methods/trustCare.methods";
+import {
+    approveTransaction, deletePatient,
+    deployPatientsRegistry, registerNewPatient, showAgeCategory, showCountryOfResidenceCode, showCountryOfWorkCode,
+    showInvalidityPercentage, showIsMale, showPatientCNSNumber, updatePatient
+} from "./contract-methods/patientsRegistry.methods";
+import {
+    deleteHealthInsurance, deployHealthInsurancesRegistry,
+    registerNewHealthInsurance, showHealthInsuranceCountryCode, showHealthInsuranceUUID,
+    updateHealthInsurance
+} from "./contract-methods/healthInsurancesRegistry.methods";
 
 const { BigNumber } = require("ethers/utils");
 
@@ -21,8 +40,10 @@ const { connectAt, requireSigner } = require("../utils/utils");
 
 class TrustCare {
 
-    static doctorsRegistryInstance;
-    static trustCareInstance;
+    doctorsRegistryInstance;
+    patientsRegistryInstance;
+    trustCareInstance;
+    healthInsuranceInstance;
 
   constructor(caller) {
     this.caller = caller;
@@ -43,17 +64,25 @@ class TrustCare {
         return new TrustCare(trustCareInstance, caller);
     }
 
-    static async deployDoctorsRegistry(signer) {
+    async deployDoctorsRegistry(signer) {
         await requireSigner(signer);
         this.doctorsRegistryInstance = await deployDoctorsRegistry(signer);
     }
 
+    async deployPatientsRegistry(signer) {
+        await requireSigner(signer);
+        this.patientsRegistryInstance = await deployPatientsRegistry(signer);
+    }
 
-    static async deployTrustCare(signer) {
+    async deployTrustCare(signer) {
         await requireSigner(signer);
         this.trustCareInstance = await deployTrustCare(signer);
     }
 
+    async deployHealthInsurancesRegistry(signer) {
+        await requireSigner(signer);
+        this.healthInsuranceInstance = await deployHealthInsurancesRegistry(signer);
+    }
 
     async isDoctor(userAddress) {
         await requireSigner(this.caller);
@@ -75,11 +104,9 @@ class TrustCare {
         return updateTransactionStatus(transactionID, status, this.trustCareInstance);
     }
 
-
-
     /// DOCTORS
 
-  async registerNewDoctor(userAddress, license, categories) {
+    async registerNewDoctor(userAddress, license, categories) {
     await requireSigner(this.caller);
     return registerNewDoctor(userAddress, license, categories, this.doctorsRegistryInstance)
   }
@@ -153,6 +180,86 @@ class TrustCare {
         await requireSigner(this.caller);
         return consultationPrescription(category, patient, prescription, this.doctorsRegistryInstance)
     }
+
+    /// PATIENTS
+
+    async registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage) {
+        await requireSigner(this.caller);
+        return registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, this.patientsRegistryInstance)
+    }
+
+    async deletePatient(userAddress) {
+        await requireSigner(this.caller);
+        return deletePatient(userAddress, this.patientsRegistryInstance)
+    }
+
+    async updatePatient(userAddress, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage) {
+        await requireSigner(this.caller);
+        return updatePatient(userAddress, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, this.patientsRegistryInstance)
+    }
+
+    async showPatientCNSNumber(userAddress) {
+        await requireSigner(this.caller);
+        return showPatientCNSNumber(userAddress, this.patientsRegistryInstance)
+    }
+
+    async showIsMale(userAddress) {
+        await requireSigner(this.caller);
+        return showIsMale(userAddress, this.patientsRegistryInstance)
+    }
+
+    async showAgeCategory(userAddress) {
+        await requireSigner(this.caller);
+        return showAgeCategory(userAddress, this.patientsRegistryInstance)
+    }
+
+    async showCountryOfResidenceCode(userAddress) {
+        await requireSigner(this.caller);
+        return showCountryOfResidenceCode(userAddress, this.patientsRegistryInstance)
+    }
+
+    async showCountryOfWorkCode(userAddress) {
+        await requireSigner(this.caller);
+        return showCountryOfWorkCode(userAddress, this.patientsRegistryInstance)
+    }
+
+    async showInvalidityPercentage(userAddress) {
+        await requireSigner(this.caller);
+        return showInvalidityPercentage(userAddress, this.patientsRegistryInstance)
+    }
+
+    async approveTransaction(userAddress) {
+        await requireSigner(this.caller);
+        return approveTransaction(userAddress, this.patientsRegistryInstance)
+    }
+
+    /// HEALTHINSURANCES
+
+    async registerNewHealthInsurance(userAddress, uuid, countryCode) {
+        await requireSigner(this.caller);
+        return registerNewHealthInsurance(userAddress, uuid, countryCode, this.healthInsuranceInstance)
+    }
+
+    async deleteHealthInsurance(userAddress) {
+        await requireSigner(this.caller);
+        return deleteHealthInsurance(userAddress, this.healthInsuranceInstance)
+    }
+
+    async updateHealthInsurance(userAddress, uuid, countryCode) {
+        await requireSigner(this.caller);
+        return updateHealthInsurance(userAddress, uuid, countryCode, this.healthInsuranceInstance)
+    }
+
+    async showHealthInsuranceUUID(userAddress) {
+        await requireSigner(this.caller);
+        return showHealthInsuranceUUID(userAddress, this.healthInsuranceInstance);
+    }
+
+    async showHealthInsuranceCountryCode(userAddress) {
+        await requireSigner(this.caller);
+        return showHealthInsuranceCountryCode(userAddress, this.healthInsuranceInstance);
+    }
+
 
 }
 

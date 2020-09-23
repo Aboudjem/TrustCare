@@ -32,7 +32,6 @@ async function showHealthInsuranceCountryCode(userAddress, contract) {
   return contract.showHealthInsuranceCountryCode(userAddress);
 }
 
-
 module.exports = {
   deployHealthInsurancesRegistry,
   registerNewHealthInsurance,
