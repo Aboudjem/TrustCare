@@ -6,7 +6,5 @@ contract HealthInsurance {
         uint16 countryCode;
         uint256[] rights;
     }
-
     mapping(address => mapping(uint256 => Fund)) funds;
-
 }
