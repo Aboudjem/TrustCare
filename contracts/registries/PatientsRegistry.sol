@@ -1,12 +1,17 @@
 pragma solidity 0.6.2;
 
-contract PatientsRegistry {
+import "../app/TrustCare.sol";
+import "../roles/Ownable.sol";
+
+contract PatientsRegistry is Ownable {
 
     event PatientRegistered (string CNSNumber, address patientAddress, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage);
     event PatientDeleted (string uuid, address patientAddress);
     event PatientUpdated (address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage);
-    
-    
+    event TransactionApproved (bytes32 transactionID, address patient);
+
+    TrustCare trustCare;
+
     struct Patient {
         string CNSNumber;
         bool isMale;
@@ -66,6 +71,18 @@ contract PatientsRegistry {
 
     function showInvalidityPercentage (address userAddress) public view returns (uint) {
         return patients[userAddress].invalidityPercentage;
+    }
+
+    function approveTransaction(uint category, uint date, address doctor, string calldata prescription) external {
+        address sender = msg.sender;
+        bytes32 transactionID = keccak256(abi.encode(category, date, doctor, sender, prescription));
+        if (trustCare.getTransactionStatus(transactionID) == 1) {
+            trustCare.updateTransactionStatus(transactionID, 2);
+            emit TransactionApproved (transactionID, sender);
+        }
+        if (trustCare.getTransactionStatus(transactionID) != 1) {
+            revert("transaction not valid");
+        }
     }
 
 }

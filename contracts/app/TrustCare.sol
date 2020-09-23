@@ -18,8 +18,8 @@ contract TrustCare is Ownable{
 
     Registries registries;
 
-    modifier onlyDoctor() {
-        require(isDoctor(msg.sender), "error : this address is not registered as doctor contract");
+    modifier onlyDoctorRegistry() {
+        require(isDoctorRegistry(msg.sender), "error : this address is not registered as doctor contract");
         _;
     }
 
@@ -36,7 +36,7 @@ contract TrustCare is Ownable{
         emit TrustCareCreated(doctorsRegistry, healthInsuranceRegistry, patientsRegistry);
     }
 
-    function isDoctor(address userAddress) public view returns (bool) {
+    function isDoctorRegistry(address userAddress) public view returns (bool) {
         if (userAddress != registries.doctorsRegistry) {
             return false;
         }
@@ -50,7 +50,7 @@ contract TrustCare is Ownable{
         return true;
     }
 
-    function newTransaction (bytes32 transactionID) external onlyDoctor {
+    function newTransaction (bytes32 transactionID) external onlyDoctorRegistry {
         transactionStatus[transactionID] = 1;
         emit TransactionCreated(transactionID);
     }
@@ -58,6 +58,11 @@ contract TrustCare is Ownable{
     function updateTransactionStatus(bytes32 transactionID, uint status) external onlyValidator {
         transactionStatus[transactionID] = status;
         emit StatusUpdated(transactionID, status);
+    }
+
+    function getTransactionStatus(bytes32 transactionID) external view returns (uint) {
+        require(transactionStatus[transactionID] == 1 || transactionStatus[transactionID] == 2 || transactionStatus[transactionID] == 3, "transaction does not exist");
+        return transactionStatus[transactionID];
     }
 
 }
