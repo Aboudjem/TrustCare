@@ -1,4 +1,4 @@
-import axios from '../../axios';
+import axios from '../../../axios';
 
 export const PATIENTS_LOADING = 'PATIENTS_LOADING';
 export const PATIENTS_LOAD_SUCCESS = 'PATIENTS_LOAD_SUCCESS';
@@ -35,3 +35,4 @@ export function patientLoadFailure(error) {
         error
     }
 }
+

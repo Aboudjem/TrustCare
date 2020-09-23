@@ -10,6 +10,7 @@ contract HealthInsurancesRegistry is AdminRole {
     event healthInsuranceDeleted (uint uuid, address healthInsurance);
     event healthInsuranceUpdated (uint uuid, address healthInsurance, uint countryCode);
     event TransactionApproved (bytes32 transactionID, address healthInsurance);
+    event TrustCareBound(address trustCare);
     
     struct HealthInsurance {
         uint uuid;
@@ -17,10 +18,13 @@ contract HealthInsurancesRegistry is AdminRole {
     }
 
     TrustCare trustCare;
-    DoctorsRegistry doctorsRegistry;
-    PatientsRegistry patientsRegistry;
 
     mapping (address => HealthInsurance) healthInsurances;
+
+    function bindToTrustCare (address trustCareAddress) public onlyOwner {
+        trustCare = TrustCare(trustCareAddress);
+        emit TrustCareBound (trustCareAddress);
+    }
 
     function registerNewHealthInsurance(address userAddress, uint uuid, uint countryCode) public onlyAdmin {
         HealthInsurance memory newHealthInsurance;
@@ -50,6 +54,8 @@ contract HealthInsurancesRegistry is AdminRole {
     }
 
     function approveTransaction(bytes32 transactionID) external {
+        DoctorsRegistry doctorsRegistry = DoctorsRegistry(trustCare.showDoctorsRegistry());
+        PatientsRegistry patientsRegistry = PatientsRegistry(trustCare.showPatientsRegistry());
         address patient = doctorsRegistry.consultationPatient(transactionID);
         address patientInsurance = patientsRegistry.showHealthInsurance(patient);
         require (msg.sender == patientInsurance, "permission denied : caller is not the valid insurance for this transaction");

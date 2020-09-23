@@ -1,6 +1,6 @@
 import React, {useCallback, useLayoutEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {loadPatients} from "../../redux/patients/actions";
+import {loadPatients} from "../../redux/patients/list/actions";
 import PatientList from '../../presentationnal/Patients/List'
 
 export default function () {
@@ -10,7 +10,7 @@ export default function () {
         dispatch(loadPatients())
     }, [dispatch]);
 
-    const {loading, error, patients} = useSelector(state => state.patients)
+    const {loading, error, patients} = useSelector(state => state.patients.list)
 
     const refresh = useCallback(() => {
         dispatch(loadPatients())

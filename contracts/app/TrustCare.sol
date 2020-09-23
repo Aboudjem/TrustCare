@@ -36,6 +36,18 @@ contract TrustCare is Ownable{
         emit TrustCareUpdated(doctorsRegistry, healthInsuranceRegistry, patientsRegistry);
     }
 
+    function showDoctorsRegistry() public view returns (address) {
+        return registries.doctorsRegistry;
+    }
+
+    function showHealthInsuranceRegistry() public view returns (address) {
+        return registries.healthInsuranceRegistry;
+    }
+
+    function showPatientsRegistry() public view returns (address) {
+        return registries.patientsRegistry;
+    }
+
     function updateTrustCare(address doctorsRegistry, address healthInsuranceRegistry, address patientsRegistry) public onlyOwner {
         registries.doctorsRegistry = doctorsRegistry;
         registries.healthInsuranceRegistry = healthInsuranceRegistry;
