@@ -2,13 +2,13 @@ pragma solidity 0.6.2;
 
 contract PatientsRegistry {
 
-    event PatientRegistered (hash CNSNumber, address patientAddress, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage);
-    event PatientDeleted (uint uuid, address patientAddress);
-    event PatientUpdated (address doctorAddress, uint[] categories);
+    event PatientRegistered (string CNSNumber, address patientAddress, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage);
+    event PatientDeleted (string uuid, address patientAddress);
+    event PatientUpdated (address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage);
     
     
     struct Patient {
-        hash CNSNumber;
+        string CNSNumber;
         bool isMale;
         uint ageCategory; //1= 0-3 yo , 2= 3-18 yo , 3= 18-25 yo, 4=25-60 yo and 5>yo
         uint countryOfResidenceCode;
@@ -18,8 +18,8 @@ contract PatientsRegistry {
 
     mapping (address => Patient) patients;
 
-    function registerNewPatient(address userAddress, hash CNSNumber, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage) {
-        Patient newPatient;
+    function registerNewPatient(address userAddress, string memory CNSNumber, bool isMale, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode,uint invalidityPercentage) public {
+        Patient memory newPatient;
         newPatient.CNSNumber = CNSNumber;
         newPatient.isMale = isMale;
         newPatient.ageCategory = ageCategory;
@@ -30,21 +30,21 @@ contract PatientsRegistry {
         emit PatientRegistered(CNSNumber, userAddress, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage);
     }
 
-    function deletePatient(address userAddress) {
-        hash CNSNumber = patients[userAddress].CNSNumber;
-        delete doctors[userAddress];
-        emit DoctorDeleted(CNSNumber, userAddress);
+    function deletePatient(address userAddress) public {
+        string memory CNSNumber = patients[userAddress].CNSNumber;
+        delete patients[userAddress];
+        emit PatientDeleted(CNSNumber, userAddress);
     }
 
-    function updatePatient(address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage) {
+    function updatePatient(address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage) public {
         patients[userAddress].ageCategory = ageCategory;
         patients[userAddress].countryOfResidenceCode = countryOfResidenceCode;
         patients[userAddress].countryOfWorkCode = countryOfWorkCode;
         patients[userAddress].invalidityPercentage = invalidityPercentage;
-        emit DoctorDeleted(userAddress, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage);
+        emit PatientUpdated(userAddress, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage);
     }
 
-    function showPatientCNSNumber(address userAddress) public view returns (hash) {
+    function showPatientCNSNumber(address userAddress) public view returns (string memory) {
         return patients[userAddress].CNSNumber;
     }
 
@@ -57,7 +57,7 @@ contract PatientsRegistry {
     }
 
     function showCountryOfResidenceCode (address userAddress) public view returns (uint) {
-        return patients[userAddress].CountryOfResidenceCode;
+        return patients[userAddress].countryOfResidenceCode;
     }
 
     function showCountryOfWorkCode (address userAddress) public view returns (uint) {
