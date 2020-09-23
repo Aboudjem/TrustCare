@@ -71,8 +71,6 @@ async function consultationPrescription(consultationID, contract) {
   return contract.consultationPrescription(consultationID);
 }
 
-
-
 module.exports = {
   deployDoctorsRegistry,
   registerNewDoctor,
