@@ -2,7 +2,7 @@
 
 The Infrachain Challenge was a hackathon focused on Blockchain in public sector organized by Infrachain in September 2020. In this repository you will be able to see the code developped by the Tokeny-PwC team.
 
-![img](https://imgur.com/Acj059z.png)
+![img](https://imgur.com/OU30RVB.png)
 
 ## Presentation 
 
