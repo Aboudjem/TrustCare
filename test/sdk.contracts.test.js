@@ -45,6 +45,21 @@ contract('TrustCare', () => {
             const isAdmin = (await trustCare.isAdmin(await user0.getAddress()));
             isAdmin.should.be.eq(false);
         });
+
+        it('should returns true if user has been added as Admin', async () => {
+            (await trustCare.addAdmin(await user0.getAddress()));
+            const isAdmin = (await trustCare.isAdmin(await user0.getAddress()));
+            isAdmin.should.be.eq(true);
+        });
+
+        it('should returns false if user has been removed from Admin', async () => {
+            (await trustCare.addAdmin(await user0.getAddress()));
+            let isAdmin = (await trustCare.isAdmin(await user0.getAddress()));
+            isAdmin.should.be.eq(true);
+            (await trustCare.removeAdmin(await user0.getAddress()));
+             isAdmin = (await trustCare.isAdmin(await user0.getAddress()));
+            isAdmin.should.be.eq(false);
+        });
     });
 
 });
