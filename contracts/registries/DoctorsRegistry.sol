@@ -10,6 +10,7 @@ contract DoctorsRegistry is AdminRole {
     event DoctorUpdated (address doctorAddress, uint[] categories);
     event ConsultationCreated (uint category, uint date, address doctor, address patient, string prescription);
     event TrustCareBound(address trustCare);
+    event ConsultationDeleted(bytes32 consultationID);
 
     TrustCare trustCare;
 
@@ -101,6 +102,13 @@ contract DoctorsRegistry is AdminRole {
         consultations[consultationID] = newConsultation;
         emit ConsultationCreated (category, date, sender, patient, prescription);
     }
+
+    function deleteConsultation(bytes32 consultationID) external onlyDoctor {
+        require (consultationDoctor(consultationID) == msg.sender && trustCare.getTransactionStatus(consultationID) == 1, "permission denied : you don't have the right to remove this consultation");
+        trustCare.deleteTransaction(consultationID);
+        emit ConsultationDeleted(consultationID);
+    }
+
     function consultationCategory(bytes32 consultationID) public view returns (uint) {
         return consultations[consultationID].category;
     }

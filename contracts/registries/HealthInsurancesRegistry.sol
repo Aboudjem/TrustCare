@@ -11,6 +11,7 @@ contract HealthInsurancesRegistry is AdminRole {
     event healthInsuranceUpdated (uint uuid, address healthInsurance, uint countryCode);
     event TransactionApproved (bytes32 transactionID, address healthInsurance);
     event TrustCareBound(address trustCare);
+    event TransactionRejected(bytes32 transactionID);
     
     struct HealthInsurance {
         uint uuid;
@@ -53,12 +54,16 @@ contract HealthInsurancesRegistry is AdminRole {
         return healthInsurances[userAddress].countryCode;
     }
 
-    function approveTransaction(bytes32 transactionID) external {
+    function getTransactionInsurance(bytes32 transactionID) public view returns (address) {
         DoctorsRegistry doctorsRegistry = DoctorsRegistry(trustCare.showDoctorsRegistry());
         PatientsRegistry patientsRegistry = PatientsRegistry(trustCare.showPatientsRegistry());
         address patient = doctorsRegistry.consultationPatient(transactionID);
         address patientInsurance = patientsRegistry.showHealthInsurance(patient);
-        require (msg.sender == patientInsurance, "permission denied : caller is not the valid insurance for this transaction");
+        return patientInsurance;
+    }
+
+    function approveTransaction(bytes32 transactionID) external {
+        require (msg.sender == getTransactionInsurance(transactionID), "permission denied : caller is not the valid insurance for this transaction");
         if (trustCare.getTransactionStatus(transactionID) == 2) {
             trustCare.updateTransactionStatus(transactionID, 3);
             emit TransactionApproved (transactionID, msg.sender);
@@ -66,5 +71,11 @@ contract HealthInsurancesRegistry is AdminRole {
         else  {
             revert("transaction not valid");
         }
+    }
+
+    function rejectTransaction(bytes32 transactionID) external  {
+        require (getTransactionInsurance(transactionID) == msg.sender && (trustCare.getTransactionStatus(transactionID) == 2 || trustCare.getTransactionStatus(transactionID) == 1), "permission denied : you don't have the right to remove this transaction");
+        trustCare.deleteTransaction(transactionID);
+        emit TransactionRejected(transactionID);
     }
 }
