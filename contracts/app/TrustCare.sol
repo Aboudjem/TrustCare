@@ -5,6 +5,7 @@ import "../roles/Ownable.sol";
 contract TrustCare is Ownable{
 
     event TransactionCreated(bytes32 transactionID);
+    event TransactionDeleted(bytes32 transactionID);
     event StatusUpdated(bytes32 transactionID, uint status);
     event TrustCareUpdated(address doctorsRegistry, address healthInsuranceRegistry, address patientsRegistry);
 
@@ -71,6 +72,12 @@ contract TrustCare is Ownable{
     function updateTransactionStatus(bytes32 transactionID, uint status) external onlyValidator {
         transactionStatus[transactionID] = status;
         emit StatusUpdated(transactionID, status);
+    }
+
+    function deleteTransaction(bytes32 transactionID) public {
+        require (isDoctorRegistry(msg.sender) || isValidator(msg.sender), "permission denied : caller is not allowed to delete the transaction");
+        delete transactionStatus[transactionID];
+        emit TransactionDeleted(transactionID);
     }
 
     function getTransactionStatus(bytes32 transactionID) external view returns (uint) {

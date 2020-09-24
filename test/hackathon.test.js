@@ -160,4 +160,122 @@ contract("Trustcare", (accounts) => {
       .registerNewDoctor(doctor1, 100000, [1, 3], { from: admin })
       .should.be.rejectedWith(EVMRevert);
   });
+
+  it("doctor should be able to delete consultation", async () => {
+    const transactionID = web3.utils.keccak256(
+      web3.eth.abi.encodeParameters(
+        ["uint", "uint", "address", "address", "string"],
+        [1, 20201121, doctor1, patient1, "prescription hash"]
+      )
+    );
+    await doctorsRegistry.registerNewDoctor(doctor1, 100000, [1, 3], {
+      from: admin,
+    }).should.be.fulfilled;
+    await doctorsRegistry.addConsultation(
+      1,
+      20201121,
+      patient1,
+      "prescription hash",
+      { from: doctor1 }
+    ).should.be.fulfilled;
+    (await trustCare.getTransactionStatus(transactionID))
+      .toString()
+      .should.equal("1");
+    await doctorsRegistry.deleteConsultation(transactionID, { from: doctor1 })
+      .should.be.fulfilled;
+    await trustCare
+      .getTransactionStatus(transactionID)
+      .should.be.rejectedWith(EVMRevert);
+    await doctorsRegistry
+      .deleteConsultation(transactionID, { from: doctor1 })
+      .should.be.rejectedWith(EVMRevert);
+  });
+
+  it("patient should be able to reject a transaction", async () => {
+    const transactionID = web3.utils.keccak256(
+      web3.eth.abi.encodeParameters(
+        ["uint", "uint", "address", "address", "string"],
+        [1, 20201121, doctor1, patient1, "prescription hash"]
+      )
+    );
+    await doctorsRegistry.registerNewDoctor(doctor1, 100000, [1, 3], {
+      from: admin,
+    }).should.be.fulfilled;
+    await doctorsRegistry.addConsultation(
+      1,
+      20201121,
+      patient1,
+      "prescription hash",
+      { from: doctor1 }
+    ).should.be.fulfilled;
+    (await trustCare.getTransactionStatus(transactionID))
+      .toString()
+      .should.equal("1");
+    await patientsRegistry.registerNewPatient(
+      patient1,
+      "1234543213454",
+      true,
+      3,
+      32,
+      352,
+      0,
+      insurance1,
+      { from: admin }
+    ).should.be.fulfilled;
+    await patientsRegistry.rejectTransaction(transactionID, { from: patient1 })
+      .should.be.fulfilled;
+    await trustCare
+      .getTransactionStatus(transactionID)
+      .should.be.rejectedWith(EVMRevert);
+  });
+
+  it("insurance company should be able to reject a transaction", async () => {
+    const transactionID = web3.utils.keccak256(
+      web3.eth.abi.encodeParameters(
+        ["uint", "uint", "address", "address", "string"],
+        [1, 20201121, doctor1, patient1, "prescription hash"]
+      )
+    );
+    await doctorsRegistry.registerNewDoctor(doctor1, 100000, [1, 3], {
+      from: admin,
+    }).should.be.fulfilled;
+    await doctorsRegistry.addConsultation(
+      1,
+      20201121,
+      patient1,
+      "prescription hash",
+      { from: doctor1 }
+    ).should.be.fulfilled;
+    (await trustCare.getTransactionStatus(transactionID))
+      .toString()
+      .should.equal("1");
+    await patientsRegistry.registerNewPatient(
+      patient1,
+      "1234543213454",
+      true,
+      3,
+      32,
+      352,
+      0,
+      insurance1,
+      { from: admin }
+    ).should.be.fulfilled;
+    await patientsRegistry.approveTransaction(transactionID, { from: patient1 })
+      .should.be.fulfilled;
+    (await trustCare.getTransactionStatus(transactionID))
+      .toString()
+      .should.equal("2");
+    await healthInsurancesRegistry.registerNewHealthInsurance(
+      insurance1,
+      1223323442,
+      32,
+      { from: admin }
+    ).should.be.fulfilled;
+    await healthInsurancesRegistry.rejectTransaction(transactionID, {
+      from: insurance1,
+    }).should.be.fulfilled;
+    await trustCare
+      .getTransactionStatus(transactionID)
+      .should.be.rejectedWith(EVMRevert);
+  });
 });

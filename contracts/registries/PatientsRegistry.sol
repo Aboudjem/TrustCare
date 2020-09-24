@@ -11,6 +11,7 @@ contract PatientsRegistry is AdminRole {
     event PatientUpdated (address userAddress, uint ageCategory, uint countryOfResidenceCode, uint countryOfWorkCode, uint invalidityPercentage, address healthInsurance);
     event TransactionApproved (bytes32 transactionID, address patient);
     event TrustCareBound(address trustCare);
+    event TransactionRejected(bytes32 transactionID);
 
     TrustCare trustCare;
 
@@ -105,6 +106,14 @@ contract PatientsRegistry is AdminRole {
         else {
             revert("transaction not valid");
         }
+    }
+
+    function rejectTransaction(bytes32 transactionID) external  {
+        DoctorsRegistry doctorsRegistry = DoctorsRegistry(trustCare.showDoctorsRegistry());
+        require (msg.sender == doctorsRegistry.consultationPatient(transactionID), "permission denied : caller is not beneficiary of the transaction");
+        require (trustCare.getTransactionStatus(transactionID) == 1 || trustCare.getTransactionStatus(transactionID) == 2, "permission denied : status of transaction doesn't allow deletion anymore");
+        trustCare.deleteTransaction(transactionID);
+        emit TransactionRejected(transactionID);
     }
 
 }
