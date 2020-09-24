@@ -1,3 +1,4 @@
+const {showHealthInsurance} = require("./contract-methods/patientsRegistry.methods");
 const {isDoctor} = require("./contract-methods/doctorsRegistry.methods");
 const {connectAt, requireSigner} = require("./utils/utils");
 const {
@@ -153,9 +154,9 @@ class TrustCare {
         return removeAdmin(userAddress, this.doctorsRegistryInstance)
     }
 
-    async addConsultation(category, patient, prescription) {
+    async addConsultation(category, date, patient, prescription) {
         await requireSigner(this.caller);
-        return addConsultation(category, patient, prescription, this.doctorsRegistryInstance)
+        return addConsultation(category, date, patient, prescription, this.doctorsRegistryInstance)
     }
 
     async consultationCategory(category, patient, prescription) {
@@ -185,9 +186,9 @@ class TrustCare {
 
     /// PATIENTS
 
-    async registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage) {
+    async registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, healthInsurance) {
         await requireSigner(this.caller);
-        return registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, this.patientsRegistryInstance)
+        return registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, healthInsurance, this.patientsRegistryInstance)
     }
 
     async deletePatient(userAddress) {
@@ -228,6 +229,11 @@ class TrustCare {
     async showInvalidityPercentage(userAddress) {
         await requireSigner(this.caller);
         return showInvalidityPercentage(userAddress, this.patientsRegistryInstance)
+    }
+
+    async showHealthInsurance(userAddress) {
+        await requireSigner(this.caller);
+        return showHealthInsurance(userAddress, this.patientsRegistryInstance)
     }
 
     async approveTransaction(userAddress) {

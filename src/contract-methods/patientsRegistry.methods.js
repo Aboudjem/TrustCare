@@ -20,6 +20,7 @@ async function registerNewPatient(
   countryOfResidenceCode,
   countryOfWorkCode,
   invalidityPercentage,
+  healthInsurance,
   contract
 ) {
   return contract.registerNewPatient(
@@ -29,7 +30,8 @@ async function registerNewPatient(
     ageCategory,
     countryOfResidenceCode,
     countryOfWorkCode,
-    invalidityPercentage
+    invalidityPercentage,
+  healthInsurance
   );
 }
 
@@ -55,28 +57,33 @@ async function updatePatient(
 }
 
 async function showPatientCNSNumber(userAddress, contract) {
-  return contract.showPatientCNSNumber(userAddress, contract);
+  return contract.showPatientCNSNumber(userAddress);
 }
 
 async function showIsMale(userAddress, contract) {
-  return contract.showIsMale(userAddress, contract);
+  return contract.showIsMale(userAddress);
 }
 
 async function showAgeCategory(userAddress, contract) {
-  return contract.showAgeCategory(userAddress, contract);
+  return contract.showAgeCategory(userAddress);
 }
 
 async function showCountryOfResidenceCode(userAddress, contract) {
-  return contract.showCountryOfResidenceCode(userAddress, contract);
+  return contract.showCountryOfResidenceCode(userAddress);
 }
 
 async function showCountryOfWorkCode(userAddress, contract) {
-  return contract.showCountryOfWorkCode(userAddress, contract);
+  return contract.showCountryOfWorkCode(userAddress);
 }
 
 async function showInvalidityPercentage(userAddress, contract) {
-  return contract.showInvalidityPercentage(userAddress, contract);
+  return contract.showInvalidityPercentage(userAddress);
 }
+
+async function showHealthInsurance(userAddress, contract) {
+  return contract.showHealthInsurance(userAddress);
+}
+
 
 async function approveTransaction(
   category,
@@ -89,8 +96,7 @@ async function approveTransaction(
     category,
     date,
     doctor,
-    prescription,
-    contract
+    prescription
   );
 }
 
@@ -105,5 +111,6 @@ module.exports = {
   showCountryOfResidenceCode,
   showCountryOfWorkCode,
   showInvalidityPercentage,
+  showHealthInsurance,
   approveTransaction,
 };

@@ -12,6 +12,8 @@ async function deployDoctorsRegistry(signer) {
   return deploy.deployed();
 }
 
+
+
 async function registerNewDoctor(userAddress, license, categories, contract) {
   return contract.registerNewDoctor(userAddress, license, categories);
 }
@@ -47,8 +49,8 @@ async function removeAdmin(userAddress, contract) {
   return contract.removeAdmin(userAddress);
 }
 
-async function addConsultation(category, patient, prescription, contract) {
-  return contract.addConsultation(category, patient, prescription);
+async function addConsultation(category, date, patient, prescription, contract) {
+  return contract.addConsultation(category, date, patient, prescription);
 }
 
 async function consultationCategory(consultationID, contract) {
