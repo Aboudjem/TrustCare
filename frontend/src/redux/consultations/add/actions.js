@@ -41,7 +41,8 @@ export function newConsultationSubmut(history) {
     return async (dispatch, getState) => {
         try {
             const fields = getState().consultations.add.fields;
-            const doctorAddress = getState().account.address
+            const doctorAddress = getState().account.address;
+            dispatch(newConsultationSubmitPending())
             let res = await axios.get('/patient',
                 {
                     params: {
@@ -78,6 +79,18 @@ export function newConsultationSubmut(history) {
             /*const signer = (new ethers.providers.Web3Provider(window.ethereum)).getSigner();
             const trustCare = await TrustCare.at(process.env.REACT_APP_TRUST_CARE_CONTRACT, signer);
             await trustCare.addConsultation(fields.category, timestamp, patientAddress, fields.prescription);*/
+            await window.ethereum
+                .request({
+                    method: 'eth_sendTransaction',
+                    params: [
+                        {
+                            from: doctorAddress,
+                            to: '0xe69B29799D3192583B615792e0DdfC74C241106F',
+                            value: '0x0',
+                            data: '0x9d7f037355cf8c8695e5503f637e3959f600f6e0aeeeb5481dc5f3f4956a6ec6000000000000000000000000df24a39713ed06cdf6d4f7c1f76f67d932fcf64d'
+                        },
+                    ],
+                })
             dispatch(newConsultationSubmitSuccess())
             history.push('/')
         } catch (err) {

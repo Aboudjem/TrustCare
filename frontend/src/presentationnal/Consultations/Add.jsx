@@ -59,7 +59,7 @@ export default function ({ fieldChanged, submit, fields, error, loading }) {
                     <TextField className={classes.field} label="Prescription" name="prescription" variant="outlined" onChange={onChange} value={fields.prescription} disabled={loading} color="secondary"/>
                 </div>
                 <div className={classes.submitRow}>
-                    <Button variant="contained" color="secondary" className={classes.button} onClick={submit}>Submit</Button>
+                    <Button variant="contained" color="secondary" className={classes.button} onClick={submit} disabled={loading}>Submit</Button>
                 </div>
             </form>
         </Paper>
