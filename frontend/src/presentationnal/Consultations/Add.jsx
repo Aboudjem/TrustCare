@@ -46,7 +46,7 @@ export default function ({ fieldChanged, submit, fields, error, loading }) {
                 <div className={classes.row}>
                     <TextField className={classes.field} label="Social Security Number" name="cns_number" variant="outlined" onChange={onChange} value={fields.cns_number} disabled={loading} color="secondary"/>
                     <FormControl className={classes.field} variant="outlined">
-                        <InputLabel>Gender</InputLabel>
+                        <InputLabel>Category</InputLabel>
                         <Select label="Category" name="category" onChange={onChange} value={fields.category} disabled={loading} color="secondary">
                             <MenuItem value="1">Cat 1</MenuItem>
                             <MenuItem value="2">Cat 2</MenuItem>
