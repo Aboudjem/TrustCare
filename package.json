@@ -14,7 +14,7 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build": "truffle compile && truffle-flattener contracts/CentralValidator.sol",
+    "build": "truffle compile && truffle-flattener contracts/app/TrustCare.sol > build/TrustCareFlat.sol && truffle-flattener contracts/registries/DoctorsRegistry.sol > build/DoctorsRegistry.sol && truffle-flattener contracts/registries/HealthInsurancesRegistry.sol > build/HealthInsurancesRegistry.sol && truffle-flattener contracts/registries/PatientsRegistry.sol > build/PatientsRegistry.sol",
     "coverage": "truffle run coverage",
     "test": "(ganache-cli 2>&1 > /dev/null &) && truffle compile && CI=true truffle test && kill $(ps -ef | grep ganache | grep -v grep | awk '{print $2}')",
     "lint:js": "eslint \"test/*.js\"",
