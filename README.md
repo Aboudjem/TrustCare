@@ -12,7 +12,14 @@ The Infrachain Challenge was a hackathon focused on Blockchain in public sector 
   <img width="230" height="110" src="https://imgur.com/HoooTrT.png">
 </p>
 
-We decided to developped a new system based on blockchain, called "Trust Care" for the health insurance company to fight fraud and to have smouth and faster transactions between all the counterparties.
+We decided to developped a new system based on blockchain, called "Trust Care" for the health insurance company to fight fraud and to have smooth and faster transactions between all the counterparties.
+
+You will find below the workflow of our application.To make it simple, a doctor publishes a consultation on the blockchain via a smart contract (DoctorsRegistry.sol) which will then be validated by the patient (PatientsRegistry.sol) as well as by the patient's health insurance company (HealthInsurancesRegistry.sol). All this using the inheritance with the Trustcare.sol contract that links them together as well as to create, update or get a transaction. Each of these contracts are registries i.e in addition to doing what is described above, they allow you to add, update or delete a patient, doctor or health insurance company. 
+
+<p align="center">
+  <img width="230" height="110" src="https://imgur.com/8Z1feqX.png">
+</p>
+
 
 #### Problems solved
 
