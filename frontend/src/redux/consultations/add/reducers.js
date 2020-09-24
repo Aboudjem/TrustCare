@@ -1,14 +1,15 @@
 import {
-    NEW_INSURANCE_CHANGE_FIELD,
-    NEW_INSURANCE_SUBMIT_FAILURE,
-    NEW_INSURANCE_SUBMIT_PENDING,
-    NEW_INSURANCE_SUBMIT_SUCCESS
+    NEW_CONSULTATION_CHANGE_FIELD,
+    NEW_CONSULTATION_SUBMIT_FAILURE,
+    NEW_CONSULTATION_SUBMIT_PENDING,
+    NEW_CONSULTATION_SUBMIT_SUCCESS
+
 } from "./actions";
 
 
 export default function add(state = { fields: [], loading: false }, action) {
     switch (action.type) {
-        case NEW_INSURANCE_CHANGE_FIELD:
+        case NEW_CONSULTATION_CHANGE_FIELD:
             return {
                 ...state,
                 error: false,
@@ -17,18 +18,18 @@ export default function add(state = { fields: [], loading: false }, action) {
                     [action.field]: action.value
                 },
             }
-        case NEW_INSURANCE_SUBMIT_PENDING:
+        case NEW_CONSULTATION_SUBMIT_PENDING:
             return {
                 ...state,
                 loading: true
             }
-        case NEW_INSURANCE_SUBMIT_SUCCESS:
+        case NEW_CONSULTATION_SUBMIT_SUCCESS:
             return {
                 ...state,
                 fields: [],
                 loading: false
             }
-        case NEW_INSURANCE_SUBMIT_FAILURE:
+        case NEW_CONSULTATION_SUBMIT_FAILURE:
             return {
                 ...state,
                 loading: false,
