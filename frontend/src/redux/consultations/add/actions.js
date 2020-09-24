@@ -1,5 +1,4 @@
 import axios from "../../../axios";
-import {newInsuranceSubmitFailure} from "../../insurance/add/actions";
 
 export const NEW_CONSULTATION_CHANGE_FIELD = 'NEW_CONSULTATION_CHANGE_FIELD';
 export const NEW_CONSULTATION_SUBMIT_PENDING = 'NEW_CONSULTATION_SUBMIT_PENDING';
@@ -48,10 +47,10 @@ export function newInsuranceSubmit(history) {
                 'cns_number': fields.cns_number
             }
         }).catch(error => {
-            dispatch(newInsuranceSubmitFailure(error.message))
+            dispatch(newConsultationSubmitFailure(error.message))
         }).then(res => {
             if (res.data.length < 1) {
-                dispatch(newInsuranceSubmitFailure("No patient for number"))
+                dispatch(newConsultationSubmitFailure("No patient for number"))
             }
             const patientAddress = res.data[0].address;
             const patientId = res.data[0]._id;
@@ -62,10 +61,10 @@ export function newInsuranceSubmit(history) {
                     'address': doctorAddress
                 }
             }).catch(error => {
-                dispatch(newInsuranceSubmitFailure(error.message))
+                dispatch(newConsultationSubmitFailure(error.message))
             }).then(res => {
                 if (res.data.length < 1) {
-                    dispatch(newInsuranceSubmitFailure("No patient for number"))
+                    dispatch(newConsultationSubmitFailure("No patient for number"))
                 }
                 const doctorId = res.data[0]._id;
                 axios.post('/insurance', {
@@ -83,7 +82,7 @@ export function newInsuranceSubmit(history) {
                     dispatch(newConsultationSubmitSuccess())
                     history.push('/')
                 }).catch(err => {
-                    dispatch(newInsuranceSubmitFailure(err.message))
+                    dispatch(newConsultationSubmitFailure(err.message))
                 })
             })
         })
