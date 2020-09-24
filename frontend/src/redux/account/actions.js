@@ -7,10 +7,9 @@ export const ACCOUNT_CHANGED = 'ACCOUNT_CHANGED';
 // const TrustCare = require("../src/TrustCare");
 const ethers = require("ethers");
 const TrustCare = require("TrustCare");
+
+
 const TRUST_CARE_CONTRACT=process.env.REACT_APP_TRUST_CARE_CONTRACT;
-const DOCTORS_REGISTRY_CONTRACT="0xe69B29799D3192583B615792e0DdfC74C241106F";
-const PATIENTS_REGISTRY_CONTRACT="0xFfd4D16fE711D8aE2c81C22d091ff9b4582EB0dA";
-const HEALTH_INSURANCE_REGISTRY_CONTRACT="0x1944aB9ab4D0E33ddE496594D42d0B37527133ee";
 
 async function getRoles(address) {
     const signer = (new ethers.providers.Web3Provider(window.ethereum)).getSigner()

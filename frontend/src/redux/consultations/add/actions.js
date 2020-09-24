@@ -39,53 +39,52 @@ export function newConsultationSubmitFailure(error) {
 }
 
 export function newInsuranceSubmit(history) {
-    return (dispatch, getState) => {
-        const fields = getState().consultations.add.fields;
-        const doctorAddress = getState().account.address
-        axios.get({
-            url: '/patient',
-            query: {
-                'cns_number': fields.cns_number
-            }
-        }).catch(error => {
-            dispatch(newInsuranceSubmitFailure(error.message))
-        }).then(res => {
+    return async (dispatch, getState) => {
+        try {
+
+
+            const fields = getState().consultations.add.fields;
+            const doctorAddress = getState().account.address
+            let res = await axios.get({
+                url: '/patient',
+                query: {
+                    'cns_number': fields.cns_number
+                }
+            })
             if (res.data.length < 1) {
                 dispatch(newInsuranceSubmitFailure("No patient for number"))
             }
             const patientAddress = res.data[0].address;
             const patientId = res.data[0]._id;
 
-            axios.get({
+            res = await axios.get({
                 url: '/doctor',
                 query: {
                     'address': doctorAddress
                 }
-            }).catch(error => {
-                dispatch(newInsuranceSubmitFailure(error.message))
-            }).then(res => {
-                if (res.data.length < 1) {
-                    dispatch(newInsuranceSubmitFailure("No patient for number"))
-                }
-                const doctorId = res.data[0]._id;
-                axios.post('/insurance', {
-                    doctor_id: doctorId,
-                    patient_id: patientId,
-                    approved_by_patient: false,
-                    approved_by_insurance: false,
-                    timestamp: Date.now(),
-                    category: fields.category,
-                    prescription: fields.prescription
-                }).then(async() => {
-                    const signer = (new ethers.providers.Web3Provider(window.ethereum)).getSigner();
-                    const trustCare = await TrustCare.at(process.env.REACT_APP_TRUST_CARE_CONTRACT, signer);
-                    await trustCare.addConsultation(fields.category, Date.now() ,patientId, fields.prescription);
-                    dispatch(newConsultationSubmitSuccess())
-                    history.push('/')
-                }).catch(err => {
-                    dispatch(newInsuranceSubmitFailure(err.message))
-                })
             })
-        })
+            if (res.data.length < 1) {
+                dispatch(newInsuranceSubmitFailure("No patient for number"))
+            }
+
+            const doctorId = res.data[0]._id;
+            const timestamp = Date.now();
+            await axios.post('/insurance', {
+                doctor_id: doctorId,
+                patient_id: patientId,
+                approved_by_patient: false,
+                approved_by_insurance: false,
+                timestamp: timestamp,
+                category: fields.category,
+                prescription: fields.prescription
+            });
+            const signer = (new ethers.providers.Web3Provider(window.ethereum)).getSigner();
+            const trustCare = await TrustCare.at(process.env.REACT_APP_TRUST_CARE_CONTRACT, signer);
+            await trustCare.addConsultation(fields.category, timestamp, patientId, fields.prescription);
+            dispatch(newConsultationSubmitSuccess())
+            history.push('/')
+        } catch (err) {
+            dispatch(newConsultationSubmitFailure(err.message))
+        }
     };
 }
