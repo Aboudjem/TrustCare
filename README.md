@@ -23,12 +23,14 @@ You will find below the workflow of our application.To make it simple, a doctor 
 
 #### Problems solved
 
-1. Declaration of false consultations by doctors
-2. Declaration of false medical certificates or false work stoppages by patients 
-3.
+1. False consultations by doctors.
+2. False authorisation to practice for doctors.
+3. False consultations by doctors-patients within certains conditions like 2 consultations in less than 3 minutes
+4. False medical certificates, prescriptions or false work stoppages by patients.
+
 
 #### Futur improvement
 
 1. Integration of a Token Euro in case the European Central Bank develops one
-2. Creation of dedicated machine learning algorithms for a better fraud detection and to have more information on citizens behaviours 
-3. 
+2. Integration of the digital health book developped by the CNS
+3. Creation of dedicated machine learning algorithms for a better fraud detection and to have more information on citizens behaviours 
