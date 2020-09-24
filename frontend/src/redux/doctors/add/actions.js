@@ -41,7 +41,7 @@ export function newDoctorSubmit(history) {
             ...fields
         }).then(() => {
             dispatch(newDoctorSubmitSuccess())
-            history.push('/doctors')
+            history.push('/admin/doctors')
         }).catch(err => {
             dispatch(newDoctorSubmitFailure(err.message))
         })

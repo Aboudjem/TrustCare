@@ -7,7 +7,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {
-    Healing,
+    Business,
     LocalHospital,
     Person
 } from "@material-ui/icons";
@@ -77,7 +77,7 @@ export default function ({children}) {
                         {roles.includes('admin') && <>
                         <ListItemLink to="/admin/patients" primary="Patients" icon={<Person/>}/>
                         <ListItemLink to="/admin/doctors" primary="Doctors" icon={<LocalHospital/>}/>
-                        <ListItemLink to="/consultations" primary="Consultations" icon={<Healing/>}/>
+                        <ListItemLink to="/admin/insurances" primary="Insurances" icon={<Business/>}/>
                         </>}
                     </List>
                 </div>
