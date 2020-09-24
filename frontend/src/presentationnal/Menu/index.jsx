@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ({children}) {
     const classes = useStyles();
 
-    const {connected} = useSelector(state => state.account)
+    const {connected, roles} = useSelector(state => state.account)
 
     return (
         <div className={classes.root}>
@@ -74,9 +74,11 @@ export default function ({children}) {
                 <Toolbar/>
                 <div className={classes.drawerContainer}>
                     <List>
-                        <ListItemLink to="/patients" primary="Patients" icon={<Person/>}/>
-                        <ListItemLink to="/doctors" primary="Doctors" icon={<LocalHospital/>}/>
+                        {roles.includes('admin') && <>
+                        <ListItemLink to="/admin/patients" primary="Patients" icon={<Person/>}/>
+                        <ListItemLink to="/admin/doctors" primary="Doctors" icon={<LocalHospital/>}/>
                         <ListItemLink to="/consultations" primary="Consultations" icon={<Healing/>}/>
+                        </>}
                     </List>
                 </div>
             </Drawer> }
