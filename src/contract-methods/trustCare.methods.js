@@ -1,6 +1,7 @@
 const ethers = require("ethers");
 
 const TrustCare = require("../../build/contracts/TrustCare.json");
+const {connectAt} = require("../utils/utils");
 
 async function deployTrustCare(
   doctorsRegistry,
@@ -21,6 +22,14 @@ async function deployTrustCare(
   return deploy.deployed();
 }
 
+async function connectTrustCare(contractAddress, caller) {
+  return await connectAt(
+      contractAddress,
+      TrustCare.abi,
+      caller
+  );
+}
+
 async function isValidator(userAddress, contract) {
   return contract.isValidator(userAddress);
 }
@@ -38,4 +47,5 @@ module.exports = {
   isValidator,
   newTransaction,
   updateTransactionStatus,
+  connectTrustCare
 };

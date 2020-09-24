@@ -1,3 +1,8 @@
+const {connectTrustCare} = require("./contract-methods/trustCare.methods");
+const {connectHealthInsurancesRegistry} = require("./contract-methods/healthInsurancesRegistry.methods");
+const {connectPatientsRegistry} = require("./contract-methods/patientsRegistry.methods");
+const {connectDoctorsRegistry} = require("./contract-methods/doctorsRegistry.methods");
+const {showHealthInsurance} = require("./contract-methods/patientsRegistry.methods");
 const {isDoctor} = require("./contract-methods/doctorsRegistry.methods");
 const {connectAt, requireSigner} = require("./utils/utils");
 const {
@@ -35,11 +40,11 @@ const {
 } = require ("./contract-methods/healthInsurancesRegistry.methods");
 
 class TrustCare {
-
-    doctorsRegistryInstance;
-    patientsRegistryInstance;
-    trustCareInstance;
-    healthInsuranceInstance;
+    //
+    // doctorsRegistryInstance;
+    // patientsRegistryInstance;
+    // trustCareInstance;
+    // healthInsuranceInstance;
 
   constructor(doctorsRegistry, healthInsurancesRegistry, patientsRegistry, trustCare, caller) {
       this.doctorsRegistryInstance = doctorsRegistry;
@@ -61,14 +66,37 @@ class TrustCare {
 
 
   static async at(contractAddress, caller) {
-        const trustCareInstance = await connectAt(
-            contractAddress,
-            TrustCare.abi,
-            caller
-        );
-        return new TrustCare(trustCareInstance, caller);
+      const trustCareInstance = await connectTrustCare("0xD6df8f165cf41409f61fB4A307d4bceeB7090AbB", caller);
+      const patientsInstance = await connectPatientsRegistry("0xFfd4D16fE711D8aE2c81C22d091ff9b4582EB0dA", caller);
+      const doctorsInstance = await connectDoctorsRegistry("0xe69B29799D3192583B615792e0DdfC74C241106F", caller);
+      const healthInsurancesInstance = await connectHealthInsurancesRegistry("0x1944aB9ab4D0E33ddE496594D42d0B37527133ee", caller);
+      // const trustCare="0xD6df8f165cf41409f61fB4A307d4bceeB7090AbB";
+      // const doctorsRegistry="0xe69B29799D3192583B615792e0DdfC74C241106F";
+      // const patientsRegistry="0xFfd4D16fE711D8aE2c81C22d091ff9b4582EB0dA";
+      // const healthInsurancesRegistry="0x1944aB9ab4D0E33ddE496594D42d0B37527133ee";
+      return new TrustCare(doctorsInstance, healthInsurancesInstance, patientsInstance, trustCareInstance, caller);
     }
 
+
+    async connectDoctorsRegistry(contractAddress, signer) {
+        await requireSigner(signer);
+        this.doctorsRegistryInstance = await connectDoctorsRegistry(signer);
+    }
+
+    async connectPatientsRegistry(contractAddress, signer) {
+        await requireSigner(signer);
+        this.patientsRegistryInstance = await connectPatientsRegistry(signer);
+    }
+
+    async connectHealthInsurancesRegistry(contractAddress, signer) {
+        await requireSigner(signer);
+        this.healthInsuranceInstance = await connectHealthInsurancesRegistry(signer);
+    }
+
+    async connectTrustCare(contractAddress, signer) {
+        await requireSigner(signer);
+        this.trustCareInstance = await connectTrustCare(signer);
+    }
 
 
     async deployDoctorsRegistry(signer) {
@@ -153,9 +181,9 @@ class TrustCare {
         return removeAdmin(userAddress, this.doctorsRegistryInstance)
     }
 
-    async addConsultation(category, patient, prescription) {
+    async addConsultation(category, date, patient, prescription) {
         await requireSigner(this.caller);
-        return addConsultation(category, patient, prescription, this.doctorsRegistryInstance)
+        return addConsultation(category, date, patient, prescription, this.doctorsRegistryInstance)
     }
 
     async consultationCategory(category, patient, prescription) {
@@ -185,9 +213,9 @@ class TrustCare {
 
     /// PATIENTS
 
-    async registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage) {
+    async registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, healthInsurance) {
         await requireSigner(this.caller);
-        return registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, this.patientsRegistryInstance)
+        return registerNewPatient(userAddress, CNSNumber, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, healthInsurance, this.patientsRegistryInstance)
     }
 
     async deletePatient(userAddress) {
@@ -228,6 +256,11 @@ class TrustCare {
     async showInvalidityPercentage(userAddress) {
         await requireSigner(this.caller);
         return showInvalidityPercentage(userAddress, this.patientsRegistryInstance)
+    }
+
+    async showHealthInsurance(userAddress) {
+        await requireSigner(this.caller);
+        return showHealthInsurance(userAddress, this.patientsRegistryInstance)
     }
 
     async approveTransaction(userAddress) {

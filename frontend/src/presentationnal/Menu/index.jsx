@@ -7,7 +7,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {
-    Healing,
+    Business, Healing,
     LocalHospital,
     Person
 } from "@material-ui/icons";
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ({children}) {
     const classes = useStyles();
 
-    const {connected} = useSelector(state => state.account)
+    const {connected, roles} = useSelector(state => state.account)
 
     return (
         <div className={classes.root}>
@@ -74,9 +74,14 @@ export default function ({children}) {
                 <Toolbar/>
                 <div className={classes.drawerContainer}>
                     <List>
-                        <ListItemLink to="/patients" primary="Patients" icon={<Person/>}/>
-                        <ListItemLink to="/doctors" primary="Doctors" icon={<LocalHospital/>}/>
-                        <ListItemLink to="/consultations" primary="Consultations" icon={<Healing/>}/>
+                        {roles.includes('admin') && <>
+                        <ListItemLink to="/admin/patients" primary="Patients" icon={<Person/>}/>
+                        <ListItemLink to="/admin/doctors" primary="Doctors" icon={<LocalHospital/>}/>
+                        <ListItemLink to="/admin/insurances" primary="Insurances" icon={<Business/>}/>
+                        </>}
+                        {roles.includes('doctor') && <>
+                            <ListItemLink to="/consultation/add" primary="New consultation" icon={<Healing/>}/>
+                        </>}
                     </List>
                 </div>
             </Drawer> }

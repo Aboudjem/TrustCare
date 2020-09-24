@@ -9,7 +9,7 @@ export default function ({error, connected, connect, loading, account}) {
             {error && <Tooltip title={error}>
                 <Warning/>
             </Tooltip>}
-            {loading && <CircularProgress color="contrast" size={15}/>}
+            {loading && <CircularProgress size={15}/>}
             Sign in
         </Button>
     }

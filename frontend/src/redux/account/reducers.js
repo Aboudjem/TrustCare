@@ -10,6 +10,7 @@ export default function account(state = {
     address: null,
     error: null,
     loading: false,
+    roles: []
 }, action) {
     switch (action.type) {
         case ACCOUNT_CONNECTED:
@@ -18,25 +19,28 @@ export default function account(state = {
                 connected: true,
                 address: action.address,
                 error: null,
-                loading: false
+                loading: false,
+                roles: action.roles
             }
         case ACCOUNT_CHANGED:
             return {
                 ...state,
-                address: action.address
+                address: action.address,
+                roles: action.roles
             }
         case ACCOUNT_CONNECTION_PENDING:
             return {
                 ...state,
                 address: null,
                 error: null,
-                loading: true
+                loading: true,
             }
         case ACCOUNT_CONNECTION_FAILED:
             return {
                 ...state,
                 error: action.error,
-                loading: false
+                loading: false,
+                roles: []
             }
         default:
             return state;
