@@ -47,6 +47,7 @@ contract DoctorsRegistry is AdminRole {
     }
 
     function registerNewDoctor(address userAddress, uint license, uint[] calldata categories) external onlyAdmin {
+        require (doctorLicense(userAddress) == 0, "doctor already exists");
         Doctor memory newDoctor;
         newDoctor.license = license;
         newDoctor.categories = categories;
@@ -55,12 +56,14 @@ contract DoctorsRegistry is AdminRole {
     }
 
     function deleteDoctor(address userAddress) external onlyAdmin {
+        require (doctorLicense(userAddress) != 0, "doctor does not exist");
         uint license = doctors[userAddress].license;
         delete doctors[userAddress];
         emit DoctorDeleted(license, userAddress);
     }
 
     function updateDoctor(address userAddress, uint[] calldata categories) external onlyAdmin {
+        require (doctorLicense(userAddress) != 0, "doctor does not exist");
         doctors[userAddress].categories = categories;
         emit DoctorUpdated(userAddress, categories);
     }
@@ -84,9 +87,8 @@ contract DoctorsRegistry is AdminRole {
         return false;
     }
 
-    function addConsultation(uint category, address patient, string calldata prescription) external onlyDoctor {
+    function addConsultation(uint category, uint date, address patient, string calldata prescription) external onlyDoctor {
         require(isAuthorized(msg.sender,category), "doctor is not allowed for this category");
-        uint date = now;
         address sender = msg.sender;
         bytes32 consultationID = keccak256(abi.encode(category, date, sender, patient, prescription));
         Consultation memory newConsultation;
