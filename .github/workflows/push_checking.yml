@@ -19,15 +19,15 @@ jobs:
 
       - name: Install dependencies
 
-        run: yarn install --frozen-lockfile
+        run: npm install
 
       - name: Lint sources
-        run: yarn run lint
+        run: npm run lint:js-fix
 
       - name: 'Check for uncommitted changes'
         run: |
           git diff --exit-code --stat -- . \
-          || (echo "##[error] found changed files after build. please 'yarn install --frozen-lockfile && yarn run lint:nofix && yarn run test:unit'" \
+          || (echo "##[error] found changed files after build. please 'npm install && npm run lint && npm run test'" \
                    "and check in all changes" \
               && exit 1)
   unit_test:
@@ -48,7 +48,7 @@ jobs:
 
       - name: Install dependencies
 
-        run: yarn install --frozen-lockfile
+        run: npm install
 
       - name: Run tests
-        run: yarn run test
+        run: npm run test
