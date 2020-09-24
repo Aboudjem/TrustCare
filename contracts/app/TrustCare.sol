@@ -5,8 +5,9 @@ import "../roles/Ownable.sol";
 contract TrustCare is Ownable{
 
     event TransactionCreated(bytes32 transactionID);
+    event TransactionDeleted(bytes32 transactionID);
     event StatusUpdated(bytes32 transactionID, uint status);
-    event TrustCareCreated(address doctorsRegistry, address healthInsuranceRegistry, address patientsRegistry);
+    event TrustCareUpdated(address doctorsRegistry, address healthInsuranceRegistry, address patientsRegistry);
 
     mapping (bytes32 => uint) transactionStatus;
 
@@ -18,8 +19,8 @@ contract TrustCare is Ownable{
 
     Registries registries;
 
-    modifier onlyDoctor() {
-        require(isDoctor(msg.sender), "error : this address is not registered as doctor contract");
+    modifier onlyDoctorRegistry() {
+        require(isDoctorRegistry(msg.sender), "error : this address is not registered as doctor contract");
         _;
     }
 
@@ -33,24 +34,37 @@ contract TrustCare is Ownable{
         registries.doctorsRegistry = doctorsRegistry;
         registries.healthInsuranceRegistry = healthInsuranceRegistry;
         registries.patientsRegistry = patientsRegistry;
-        emit TrustCareCreated(doctorsRegistry, healthInsuranceRegistry, patientsRegistry);
+        emit TrustCareUpdated(doctorsRegistry, healthInsuranceRegistry, patientsRegistry);
     }
 
-    function isDoctor(address userAddress) public view returns (bool) {
-        if (userAddress != registries.doctorsRegistry) {
-            return false;
-        }
-        return true;
+    function showDoctorsRegistry() public view returns (address) {
+        return registries.doctorsRegistry;
+    }
+
+    function showHealthInsuranceRegistry() public view returns (address) {
+        return registries.healthInsuranceRegistry;
+    }
+
+    function showPatientsRegistry() public view returns (address) {
+        return registries.patientsRegistry;
+    }
+
+    function updateTrustCare(address doctorsRegistry, address healthInsuranceRegistry, address patientsRegistry) public onlyOwner {
+        registries.doctorsRegistry = doctorsRegistry;
+        registries.healthInsuranceRegistry = healthInsuranceRegistry;
+        registries.patientsRegistry = patientsRegistry;
+        emit TrustCareUpdated(doctorsRegistry, healthInsuranceRegistry, patientsRegistry);
+    }
+
+    function isDoctorRegistry(address userAddress) public view returns (bool) {
+        return (userAddress == registries.doctorsRegistry);
     }
 
     function isValidator(address userAddress) public view returns (bool) {
-        if (userAddress != registries.healthInsuranceRegistry && userAddress != registries.patientsRegistry) {
-            return false;
-        }
-        return true;
+        return (userAddress == registries.healthInsuranceRegistry || userAddress == registries.patientsRegistry);
     }
 
-    function newTransaction (bytes32 transactionID) external onlyDoctor {
+    function newTransaction (bytes32 transactionID) external onlyDoctorRegistry {
         transactionStatus[transactionID] = 1;
         emit TransactionCreated(transactionID);
     }
@@ -58,6 +72,17 @@ contract TrustCare is Ownable{
     function updateTransactionStatus(bytes32 transactionID, uint status) external onlyValidator {
         transactionStatus[transactionID] = status;
         emit StatusUpdated(transactionID, status);
+    }
+
+    function deleteTransaction(bytes32 transactionID) public {
+        require (isDoctorRegistry(msg.sender) || isValidator(msg.sender), "permission denied : caller is not allowed to delete the transaction");
+        delete transactionStatus[transactionID];
+        emit TransactionDeleted(transactionID);
+    }
+
+    function getTransactionStatus(bytes32 transactionID) external view returns (uint) {
+        require(transactionStatus[transactionID] == 1 || transactionStatus[transactionID] == 2 || transactionStatus[transactionID] == 3, "transaction does not exist");
+        return transactionStatus[transactionID];
     }
 
 }

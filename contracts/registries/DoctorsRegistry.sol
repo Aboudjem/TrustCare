@@ -1,16 +1,16 @@
 pragma solidity 0.6.2;
 
 import "../app/TrustCare.sol";
-import "../roles/Ownable.sol";
+import "../roles/AdminRole.sol";
 
-contract DoctorsRegistry is Ownable {
+contract DoctorsRegistry is AdminRole {
 
     event DoctorRegistered (uint license, address doctorAddress, uint[] categories);
     event DoctorDeleted (uint license, address doctorAddress);
     event DoctorUpdated (address doctorAddress, uint[] categories);
     event ConsultationCreated (uint category, uint date, address doctor, address patient, string prescription);
-    event AdminCreated(address admin);
-    event AdminRemoved(address admin);
+    event TrustCareBound(address trustCare);
+    event ConsultationDeleted(bytes32 consultationID);
 
     TrustCare trustCare;
 
@@ -29,16 +29,15 @@ contract DoctorsRegistry is Ownable {
 
     mapping (address => Doctor) doctors;
     mapping (bytes32 => Consultation) consultations;
-    mapping (address => bool) admins;
 
     modifier onlyDoctor() {
         require(isDoctor(msg.sender), "error : this address is not registered as doctor");
         _;
     }
 
-    modifier onlyAdmin() {
-        require(isAdmin(msg.sender), "error : this address is not registered as admin");
-        _;
+    function bindToTrustCare (address trustCareAddress) public onlyOwner {
+        trustCare = TrustCare(trustCareAddress);
+        emit TrustCareBound (trustCareAddress);
     }
 
     function isDoctor(address userAddress) public view returns (bool) {
@@ -48,23 +47,8 @@ contract DoctorsRegistry is Ownable {
         return false;
     }
 
-    function isAdmin(address userAddress) public view returns (bool) {
-        return admins[userAddress];
-    }
-
-    function addAdmin(address admin) external onlyOwner {
-        require(!admins[admin], "admin already exists");
-        admins[admin] = true;
-        emit AdminCreated(admin);
-    }
-
-    function removeAdmin(address admin) external onlyOwner {
-        require(admins[admin], "admin doesn't exist");
-        admins[admin] = false;
-        emit AdminRemoved(admin);
-    }
-
     function registerNewDoctor(address userAddress, uint license, uint[] calldata categories) external onlyAdmin {
+        require (doctorLicense(userAddress) == 0, "doctor already exists");
         Doctor memory newDoctor;
         newDoctor.license = license;
         newDoctor.categories = categories;
@@ -73,12 +57,14 @@ contract DoctorsRegistry is Ownable {
     }
 
     function deleteDoctor(address userAddress) external onlyAdmin {
+        require (doctorLicense(userAddress) != 0, "doctor does not exist");
         uint license = doctors[userAddress].license;
         delete doctors[userAddress];
         emit DoctorDeleted(license, userAddress);
     }
 
     function updateDoctor(address userAddress, uint[] calldata categories) external onlyAdmin {
+        require (doctorLicense(userAddress) != 0, "doctor does not exist");
         doctors[userAddress].categories = categories;
         emit DoctorUpdated(userAddress, categories);
     }
@@ -91,8 +77,19 @@ contract DoctorsRegistry is Ownable {
         return doctors[userAddress].categories;
     }
 
-    function addConsultation(uint category, address patient, string calldata prescription) external onlyDoctor {
-        uint date = now;
+    function isAuthorized (address doctor, uint category) public view returns (bool) {
+        uint[] memory categories = doctors[doctor].categories;
+        uint length = categories.length;
+        for (uint i = 0; i < length; i++) {
+            if (categories[i] == category) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function addConsultation(uint category, uint date, address patient, string calldata prescription) external onlyDoctor {
+        require(isAuthorized(msg.sender,category), "doctor is not allowed for this category");
         address sender = msg.sender;
         bytes32 consultationID = keccak256(abi.encode(category, date, sender, patient, prescription));
         Consultation memory newConsultation;
@@ -105,6 +102,13 @@ contract DoctorsRegistry is Ownable {
         consultations[consultationID] = newConsultation;
         emit ConsultationCreated (category, date, sender, patient, prescription);
     }
+
+    function deleteConsultation(bytes32 consultationID) external onlyDoctor {
+        require (consultationDoctor(consultationID) == msg.sender && trustCare.getTransactionStatus(consultationID) == 1, "permission denied : you don't have the right to remove this consultation");
+        trustCare.deleteTransaction(consultationID);
+        emit ConsultationDeleted(consultationID);
+    }
+
     function consultationCategory(bytes32 consultationID) public view returns (uint) {
         return consultations[consultationID].category;
     }

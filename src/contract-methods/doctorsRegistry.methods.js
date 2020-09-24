@@ -1,6 +1,6 @@
 const ethers = require("ethers");
 
-const DoctorsRegistry = require("../../build/contracts/DoctorRegistry.json");
+const DoctorsRegistry = require("../../build/contracts/DoctorsRegistry.json");
 
 async function deployDoctorsRegistry(signer) {
   const factory = new ethers.ContractFactory(
@@ -23,16 +23,52 @@ async function updateDoctor(userAddress, categories, contract) {
   return contract.updateDoctor(userAddress, categories);
 }
 
-async function doctor(userAddress, contract) {
-  return contract.doctor(userAddress, contract);
+async function doctorLicense(userAddress, contract) {
+  return contract.doctorLicense(userAddress);
+}
+
+async function doctorCategories(userAddress, contract) {
+  return contract.doctorCategories(userAddress);
+}
+
+async function isDoctor(userAddress, contract) {
+  return contract.isDoctor(userAddress);
+}
+
+async function isAdmin(userAddress, contract) {
+  return contract.isAdmin(userAddress);
+}
+
+async function addAdmin(userAddress, contract) {
+  return contract.addAdmin(userAddress);
+}
+
+async function removeAdmin(userAddress, contract) {
+  return contract.removeAdmin(userAddress);
 }
 
 async function addConsultation(category, patient, prescription, contract) {
   return contract.addConsultation(category, patient, prescription);
 }
 
-async function consultation(consultationID, contract) {
-  return contract.consultation(consultationID);
+async function consultationCategory(consultationID, contract) {
+  return contract.consultationCategory(consultationID);
+}
+
+async function consultationDate(consultationID, contract) {
+  return contract.consultationDate(consultationID);
+}
+
+async function consultationDoctor(consultationID, contract) {
+  return contract.consultationDoctor(consultationID);
+}
+
+async function consultationPatient(consultationID, contract) {
+  return contract.consultationPatient(consultationID);
+}
+
+async function consultationPrescription(consultationID, contract) {
+  return contract.consultationPrescription(consultationID);
 }
 
 module.exports = {
@@ -40,7 +76,16 @@ module.exports = {
   registerNewDoctor,
   deleteDoctor,
   updateDoctor,
-  doctor,
+  isDoctor,
+  isAdmin,
+  doctorLicense,
+  doctorCategories,
+  addAdmin,
+  removeAdmin,
   addConsultation,
-  consultation,
+  consultationCategory,
+  consultationDate,
+  consultationDoctor,
+  consultationPatient,
+  consultationPrescription,
 };

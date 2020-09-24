@@ -16,7 +16,7 @@
   "scripts": {
     "build": "truffle compile && truffle-flattener contracts/CentralValidator.sol",
     "coverage": "truffle run coverage",
-    "test": "(ganache-cli 2>&1 > /dev/null &) && CI=true truffle test && kill $(ps -ef | grep ganache | grep -v grep | awk '{print $2}')",
+    "test": "(ganache-cli 2>&1 > /dev/null &) && truffle compile && CI=true truffle test && kill $(ps -ef | grep ganache | grep -v grep | awk '{print $2}')",
     "lint:js": "eslint \"test/*.js\"",
     "lint:js-fix": "eslint \"test/*.js\" --fix",
     "lint": "npm run lint:sol",
