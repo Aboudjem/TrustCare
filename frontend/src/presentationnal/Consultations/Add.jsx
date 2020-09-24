@@ -36,7 +36,7 @@ export default function ({ fieldChanged, submit, fields, error, loading }) {
 
     return <>
         <Typography variant="h4" className={classes.title}>
-            Add patient
+            Add consultation
         </Typography>
         {error && <Typography color="error">
             {error}

@@ -1,35 +1,36 @@
+import ethers from "ethers";
+import {TrustCare} from "TrustCare";
+
 export const ACCOUNT_CONNECTED = 'ACCOUNT_CONNECTED';
 export const ACCOUNT_CONNECTION_PENDING = 'ACCOUNT_CONNECTION_PENDING';
 export const ACCOUNT_CONNECTION_FAILED = 'ACCOUNT_CONNECTION_FAILED';
 export const ACCOUNT_CHANGED = 'ACCOUNT_CHANGED';
 
-const ethers = require("ethers");
-const TrustCare = require("TrustCare");
-
 
 const TRUST_CARE_CONTRACT=process.env.REACT_APP_TRUST_CARE_CONTRACT;
 
 async function getRoles(address) {
-    /*const signer = (new ethers.providers.Web3Provider(window.ethereum)).getSigner()
+    console.log({TrustCare})
+    const signer = (new ethers.providers.Web3Provider(window.ethereum)).getSigner()
     const trustCare = await TrustCare.at(TRUST_CARE_CONTRACT, signer);
 
     let tab = [];
-   if(await trustCare.isAdmin(await signer.getAddress())) {
+   if(await trustCare.isAdmin(address)) {
        tab.push('admin');
    }
-   if (await trustCare.isDoctor(await signer.getAddress())) {
+   if (await trustCare.isDoctor(address)) {
        tab.push('doctor');
    }
 
-   if(await signer.getAddress() === '0xDF24A39713ed06CDF6d4f7C1F76f67d932FCF64D') {
+   if(address === '0xDF24A39713ed06CDF6d4f7C1F76f67d932FCF64D') {
        tab.push('patient');
    }
 
-    if(await signer.getAddress() === '0x00E3644053e637421AC1f0f1397Abb05e07ff27b') {
-        tab.push('healthInsurance');
-    }*/
+    if(address === '0x00E3644053e637421AC1f0f1397Abb05e07ff27b') {
+        tab.push('insurance');
+    }
 
-    return ['admin'];
+    return tab;
 }
 
 export function connectAccount() {
