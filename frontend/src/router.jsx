@@ -25,6 +25,10 @@ export default function () {
                 <Route exact path="/admin/insurances/add" component={InsuranceAdd}/>
             </>)
         }
+        {roles.includes('doctor') && (<>
+            <Route exact path="/consultation/add" component={PatientList}/>
+            </>)
+        }
         <Redirect to="/"/>
 
     </Switch>

@@ -79,6 +79,9 @@ export default function ({children}) {
                         <ListItemLink to="/admin/doctors" primary="Doctors" icon={<LocalHospital/>}/>
                         <ListItemLink to="/admin/insurances" primary="Insurances" icon={<Business/>}/>
                         </>}
+                        {roles.includes('doctors') && <>
+                            <ListItemLink to="/consultation/add" primary="New consultation" icon={<Person/>}/>
+                        </>}
                     </List>
                 </div>
             </Drawer> }
