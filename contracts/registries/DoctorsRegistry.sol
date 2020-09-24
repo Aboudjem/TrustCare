@@ -88,10 +88,14 @@ contract DoctorsRegistry is AdminRole {
         return false;
     }
 
+    function getConsultationID(uint category, uint date, address doctor, address patient, string memory prescription) public view returns (bytes32) {
+        return keccak256(abi.encode(category, date, doctor, patient, prescription));
+    }
+
     function addConsultation(uint category, uint date, address patient, string calldata prescription) external onlyDoctor {
         require(isAuthorized(msg.sender,category), "doctor is not allowed for this category");
         address sender = msg.sender;
-        bytes32 consultationID = keccak256(abi.encode(category, date, sender, patient, prescription));
+        bytes32 consultationID = getConsultationID(category, date, sender, patient, prescription);
         Consultation memory newConsultation;
         newConsultation.category = category;
         newConsultation.date = date;

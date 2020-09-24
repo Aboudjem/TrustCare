@@ -5,6 +5,8 @@ import PatientList from "./container/Patients/List";
 import PatientAdd from "./container/Patients/Add";
 import DoctorList from "./container/Doctors/List";
 import DoctorAdd from "./container/Doctors/Add";
+import InsuranceList from "./container/Insurances/List";
+import InsuranceAdd from "./container/Insurances/Add";
 import {useSelector} from "react-redux";
 
 
@@ -19,6 +21,8 @@ export default function () {
                 <Route exact path="/admin/patients/add" component={PatientAdd}/>
                 <Route exact path="/admin/doctors" component={DoctorList}/>
                 <Route exact path="/admin/doctors/add" component={DoctorAdd}/>
+                <Route exact path="/admin/insurances" component={InsuranceList}/>
+                <Route exact path="/admin/insurances/add" component={InsuranceAdd}/>
             </>)
         }
         <Redirect to="/"/>

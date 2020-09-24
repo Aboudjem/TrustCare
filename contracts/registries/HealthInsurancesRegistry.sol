@@ -73,6 +73,13 @@ contract HealthInsurancesRegistry is AdminRole {
         }
     }
 
+    function isHealthInsurance(address userAddress) public view returns (bool){
+        if (healthInsurances[userAddress].uuid != 0) {
+            return true;
+        }
+        return false;
+    }
+
     function rejectTransaction(bytes32 transactionID) external  {
         require (getTransactionInsurance(transactionID) == msg.sender && (trustCare.getTransactionStatus(transactionID) == 2 || trustCare.getTransactionStatus(transactionID) == 1), "permission denied : you don't have the right to remove this transaction");
         trustCare.deleteTransaction(transactionID);

@@ -53,6 +53,13 @@ contract PatientsRegistry is AdminRole {
         emit PatientRegistered(CNSNumber, userAddress, isMale, ageCategory, countryOfResidenceCode, countryOfWorkCode, invalidityPercentage, healthInsurance);
     }
 
+    function isPatient(address userAddress) public view returns (bool) {
+        if (patients[userAddress].ageCategory != 0) {
+            return true;
+        }
+        return false;
+    }
+
     function deletePatient(address userAddress) public onlyAdmin {
         string memory CNSNumber = patients[userAddress].CNSNumber;
         delete patients[userAddress];

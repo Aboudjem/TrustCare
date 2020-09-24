@@ -5,14 +5,14 @@ import {Link} from "react-router-dom";
 import Loading from "../Loading";
 
 
-export default function ({loading, error, patients, refresh,}) {
+export default function ({loading, error, insurances, refresh,}) {
 
     const Header = () => {
         return (<div>
             <IconButton onClick={refresh}>
                 <Refresh/>
             </IconButton>
-            <IconButton component={Link} to="/admin/patients/add">
+            <IconButton component={Link} to="/admin/insurances/add">
                 <Add/>
             </IconButton>
         </div>);
@@ -36,18 +36,12 @@ export default function ({loading, error, patients, refresh,}) {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>CNS number</TableCell>
                         <TableCell>Name</TableCell>
-                        <TableCell>Birth date</TableCell>
-                        <TableCell>Gender</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {patients.map(patient => (<TableRow key={patient._id}>
-                        <TableCell>{patient.cns_number}</TableCell>
-                        <TableCell>{patient.first_name} {patient.last_name}</TableCell>
-                        <TableCell>{patient.birth_date.slice(0, -14)}</TableCell>
-                        <TableCell>{patient.gender}</TableCell>
+                    {insurances.map(insurance => (<TableRow key={insurance._id}>
+                        <TableCell>{insurance.name}</TableCell>
                     </TableRow>))}
                 </TableBody>
             </Table>

@@ -12,7 +12,7 @@ export default function ({loading, error, doctors, refresh,}) {
             <IconButton onClick={refresh}>
                 <Refresh/>
             </IconButton>
-            <IconButton component={Link} to="/doctors/add">
+            <IconButton component={Link} to="/admin/doctors/add">
                 <Add/>
             </IconButton>
         </div>);
