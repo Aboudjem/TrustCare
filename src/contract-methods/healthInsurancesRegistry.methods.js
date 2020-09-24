@@ -1,6 +1,7 @@
 const ethers = require("ethers");
 
 const HealthInsurancesRegistry = require("../../build/contracts/HealthInsurancesRegistry.json");
+const {connectAt} = require("../utils/utils");
 
 async function deployHealthInsurancesRegistry(signer) {
   const factory = new ethers.ContractFactory(
@@ -10,6 +11,14 @@ async function deployHealthInsurancesRegistry(signer) {
   );
   const deploy = await factory.deploy();
   return deploy.deployed();
+}
+
+async function connectHealthInsurancesRegistry(contractAddress, caller) {
+  return await connectAt(
+      contractAddress,
+      HealthInsurancesRegistry.abi,
+      caller
+  );
 }
 
 async function registerNewHealthInsurance(userAddress, uuid, countryCode, contract) {
@@ -39,4 +48,5 @@ module.exports = {
   updateHealthInsurance,
   showHealthInsuranceUUID,
   showHealthInsuranceCountryCode,
+  connectHealthInsurancesRegistry
 };

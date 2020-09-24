@@ -1,3 +1,7 @@
+const {connectTrustCare} = require("./contract-methods/trustCare.methods");
+const {connectHealthInsurancesRegistry} = require("./contract-methods/healthInsurancesRegistry.methods");
+const {connectPatientsRegistry} = require("./contract-methods/patientsRegistry.methods");
+const {connectDoctorsRegistry} = require("./contract-methods/doctorsRegistry.methods");
 const {showHealthInsurance} = require("./contract-methods/patientsRegistry.methods");
 const {isDoctor} = require("./contract-methods/doctorsRegistry.methods");
 const {connectAt, requireSigner} = require("./utils/utils");
@@ -36,11 +40,11 @@ const {
 } = require ("./contract-methods/healthInsurancesRegistry.methods");
 
 class TrustCare {
-
-    doctorsRegistryInstance;
-    patientsRegistryInstance;
-    trustCareInstance;
-    healthInsuranceInstance;
+    //
+    // doctorsRegistryInstance;
+    // patientsRegistryInstance;
+    // trustCareInstance;
+    // healthInsuranceInstance;
 
   constructor(doctorsRegistry, healthInsurancesRegistry, patientsRegistry, trustCare, caller) {
       this.doctorsRegistryInstance = doctorsRegistry;
@@ -62,14 +66,37 @@ class TrustCare {
 
 
   static async at(contractAddress, caller) {
-        const trustCareInstance = await connectAt(
-            contractAddress,
-            TrustCare.abi,
-            caller
-        );
-        return new TrustCare(trustCareInstance, caller);
+      const trustCareInstance = await connectTrustCare("0xD6df8f165cf41409f61fB4A307d4bceeB7090AbB", caller);
+      const patientsInstance = await connectPatientsRegistry("0xFfd4D16fE711D8aE2c81C22d091ff9b4582EB0dA", caller);
+      const doctorsInstance = await connectDoctorsRegistry("0xe69B29799D3192583B615792e0DdfC74C241106F", caller);
+      const healthInsurancesInstance = await connectHealthInsurancesRegistry("0x1944aB9ab4D0E33ddE496594D42d0B37527133ee", caller);
+      // const trustCare="0xD6df8f165cf41409f61fB4A307d4bceeB7090AbB";
+      // const doctorsRegistry="0xe69B29799D3192583B615792e0DdfC74C241106F";
+      // const patientsRegistry="0xFfd4D16fE711D8aE2c81C22d091ff9b4582EB0dA";
+      // const healthInsurancesRegistry="0x1944aB9ab4D0E33ddE496594D42d0B37527133ee";
+      return new TrustCare(doctorsInstance, healthInsurancesInstance, patientsInstance, trustCareInstance, caller);
     }
 
+
+    async connectDoctorsRegistry(contractAddress, signer) {
+        await requireSigner(signer);
+        this.doctorsRegistryInstance = await connectDoctorsRegistry(signer);
+    }
+
+    async connectPatientsRegistry(contractAddress, signer) {
+        await requireSigner(signer);
+        this.patientsRegistryInstance = await connectPatientsRegistry(signer);
+    }
+
+    async connectHealthInsurancesRegistry(contractAddress, signer) {
+        await requireSigner(signer);
+        this.healthInsuranceInstance = await connectHealthInsurancesRegistry(signer);
+    }
+
+    async connectTrustCare(contractAddress, signer) {
+        await requireSigner(signer);
+        this.trustCareInstance = await connectTrustCare(signer);
+    }
 
 
     async deployDoctorsRegistry(signer) {

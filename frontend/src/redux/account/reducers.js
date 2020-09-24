@@ -20,13 +20,13 @@ export default function account(state = {
                 address: action.address,
                 error: null,
                 loading: false,
-                roles: ['admin']
+                roles: action.roles
             }
         case ACCOUNT_CHANGED:
             return {
                 ...state,
                 address: action.address,
-                roles: []
+                roles: action.roles
             }
         case ACCOUNT_CONNECTION_PENDING:
             return {
