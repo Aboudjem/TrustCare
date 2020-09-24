@@ -15,6 +15,6 @@ export default function () {
     const classes = useStyles();
 
     return <div className={classes.center}>
-        <CircularProgress/>
+        <CircularProgress color="secondary"/>
     </div>
 }

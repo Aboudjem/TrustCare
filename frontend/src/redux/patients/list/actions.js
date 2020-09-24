@@ -7,7 +7,7 @@ export const PATIENTS_LOAD_FAILURE = 'PATIENTS_LOAD_FAILURE';
 export function loadPatients() {
     return (dispatch) => {
         dispatch(patientLoading());
-        axios.get('/patient').then(res => {
+        axios.get('/patient?sort=cns_number').then(res => {
             dispatch(patientLoadSuccess(res.data))
         }).catch(error => {
             dispatch(patientLoadFailure(error.message))
